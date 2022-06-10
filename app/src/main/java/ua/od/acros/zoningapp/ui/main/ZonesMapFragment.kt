@@ -25,6 +25,7 @@ import ua.od.acros.zoningapp.misc.utils.screenValue
 import ua.od.acros.zoningapp.vm.MainViewModel
 import ua.od.acros.zoningapp.R
 import ua.od.acros.zoningapp.databinding.FragmentZonesMapBinding
+import ua.od.acros.zoningapp.misc.utils.Building
 import java.util.regex.Pattern
 import kotlin.collections.ArrayList
 
@@ -182,7 +183,7 @@ class ZonesMapFragment : Fragment() {
 
         binding.btnExportResults.clicks().subscribe {
             val list = sharedViewModel.selectedBuildingsList.value
-                ?.map { building -> building.group }
+                ?.map { building ->  mapBuilding(building) }
                 ?.toTypedArray()
             sharedViewModel.selectedZone.postValue(zonesList[markerShown].first.title to list)
             val area = zonesList[markerShown].second
@@ -238,6 +239,11 @@ class ZonesMapFragment : Fragment() {
         binding.avZonesMapFragmentBanner.loadAd(adRequest)
 
         return binding.root
+    }
+
+    private fun mapBuilding(building: Building): String {
+        val addition = if (building.misc != "") " (${building.misc})" else ""
+        return "${building.group}$addition"
     }
 
     private fun showNextMarker() {

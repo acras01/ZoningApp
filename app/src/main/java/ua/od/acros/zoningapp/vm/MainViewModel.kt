@@ -121,12 +121,13 @@ class MainViewModel @Inject constructor(
                     .toSet()
                 val pattern = Pattern.compile("$title[А-Я]")
                 if (codeStr.any { e -> pattern.matcher(e).matches() }) {
+                    val addition = if (building.misc != "") " (${building.misc})" else ""
                     if (codeStr.contains("${title}П"))
-                        list1.add("  - ${building.group}\n")
+                        list1.add("  - ${building.group}$addition\n")
                     else if (codeStr.contains("${title}С"))
-                        list2.add("  - ${building.group}\n")
+                        list2.add("  - ${building.group}$addition\n")
                     else if (codeStr.contains("${title}Д"))
-                        list3.add("  - ${building.group}\n")
+                        list3.add("  - ${building.group}$addition\n")
                 }
             }
             return arrayOf(list1.toSet().sorted().toContinuousString(),
