@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="odesa">Одеса</string>
+    <string name="kyiv">Київ (в розробці)</string>
+    <string name="kharkiv">Харків (в розробці)</string>
+    <string name="city_select_fragment">Будь ласка, виберіть населений пункт України для аналізу:</string>
+    <string name="select_city">Старт!</string>
+    <string name="pick_location_on_map">Оберіть локацію на мапі</string>
+    <string name="enter_address">Введіть адресу (без назви міста)</string>
+    <string name="choose_my_location">Визначити за моїм місцезнаходженням</string>
+    <string name="recommend_plot">Порекомендувати ділянку за моїми крітеріями</string>
+    <string name="select_your_city">Оберіть ваше місто</string>
+    <string name="check_my_plot">Перевірити містобудівні обмеження для моєї ділянки</string>
+    <string name="find_zone">Знайти відповідну зону!</string>
+    <string name="choose_intentions">Будь ласка, вкажіть Ваші наміри щодо забудови:</string>
+    <string name="select_building_type">Оберіть тип будівлі</string>
+    <string name="select_building_group">Оберіть групу будівлі</string>
+    <string name="suitable_zones">Відповідні зони:</string>
+    <string name="export_zones">Експортувати результати</string>
+    <string name="new_search">Новий пошук</string>
+    <string name="saved">Збережено!</string>
+    <string name="not_saved">Не вдалося зберегти</string>
+    <string name="selected_zones">Ви обрали зону %1$s</string>
+    <string name="show_selected_zone">Показати інформацію по зоні</string>
+    <string name="export_data">Експортувати:</string>
+    <string name="choose_file_type">Оберіть тип файлу</string>
+    <string name="preferred">1. Переважні:</string>
+    <string name="accompanying">2. Супутні:</string>
+    <string name="acceptable">3. Допустимі:</string>
+    <string name="save">Зберегти</string>
+    <string name="select_directory_path">Оберіть місце зберігання</string>
+    <string name="path_to_file">Місце зберігання: %1$s</string>
+    <string name="path_not_set">Папку не вибрано</string>
+    <string name="enter_file_name">Введіть ім`я файлу</string>
+    <string name="give_location_permission">Надайте доступ до місцезнаходження</string>
+    <string name="give_storage_permission" >Надайте доступ до внутрішнього сховища</string>
+    <string name="back">Назад</string>
+    <string name="forward">Вперед</string>
+    <string name="preferred_one">Переважний</string>
+    <string name="accompanying_one">Супутній</string>
+    <string name="acceptable_one">Допустимий</string>
+</resources>

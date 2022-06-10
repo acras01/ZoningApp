@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/background"
+    tools:context=".ui.main.CitySelectFragment">
+
+    <TextView
+        android:id="@+id/tv_exportData"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginBottom="32dp"
+        android:text="@string/export_data"
+        android:textAlignment="center"
+        android:textColor="@color/black"
+        android:textSize="24sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <androidx.appcompat.widget.LinearLayoutCompat
+        android:id="@+id/ll"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginBottom="8dp"
+        android:orientation="vertical"
+        app:layout_constraintBottom_toTopOf="@+id/btn_export"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tv_exportData">
+
+        <EditText
+            android:id="@+id/et_enterFileName"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="8dp"
+            android:ems="10"
+            android:hint="@string/enter_file_name"
+            android:inputType="textPersonName"
+            android:minHeight="48dp"
+            android:textColor="@color/button_text_color"
+            android:textColorHint="@color/button_text_color"
+            android:textSize="20sp" />
+
+        <Spinner
+            android:id="@+id/sp_filePath"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="24dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="24dp"
+            android:layout_marginBottom="8dp"
+            android:dropDownWidth="match_parent"
+            android:entries="@array/file_paths"
+            android:gravity="center_horizontal"
+            android:minHeight="48dp"
+            android:spinnerMode="dropdown"
+            android:textAlignment="textStart"
+            android:verticalScrollbarPosition="defaultPosition"
+            tools:ignore="SpeakableTextPresentCheck"
+            tools:listitem="@layout/spinner_item" />
+
+        <Spinner
+            android:id="@+id/sp_fileType"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="24dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="24dp"
+            android:layout_marginBottom="8dp"
+            android:dropDownWidth="match_parent"
+            android:entries="@array/file_types"
+            android:gravity="center_horizontal"
+            android:minHeight="48dp"
+            android:spinnerMode="dropdown"
+            android:textAlignment="textStart"
+            android:verticalScrollbarPosition="defaultPosition"
+            tools:ignore="SpeakableTextPresentCheck"
+            tools:listitem="@layout/spinner_item" />
+    </androidx.appcompat.widget.LinearLayoutCompat>
+
+    <Button
+        android:id="@+id/btn_export"
+        android:layout_width="192dp"
+        android:layout_height="64dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="24dp"
+        android:backgroundTint="@color/button_state_colors"
+        android:text="@string/save"
+        android:textColor="@color/button_text_state_colors"
+        app:layout_constraintBottom_toTopOf="@+id/av_exportSettingsFragmentBanner"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/ll" />
+
+    <com.google.android.gms.ads.AdView
+        android:id="@+id/av_exportSettingsFragmentBanner"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        app:adSize="BANNER"
+        app:adUnitId="ca-app-pub-5575310058998232/5854634701"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

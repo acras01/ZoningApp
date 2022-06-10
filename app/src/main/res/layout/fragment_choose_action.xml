@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/background"
+    tools:context=".ui.main.ChooseActionFragment">
+
+    <TextView
+        android:id="@+id/tv_recommendPlot"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginBottom="32dp"
+        android:drawablePadding="8dp"
+        android:gravity="center_horizontal"
+        android:maxLines="3"
+        android:minLines="2"
+        android:singleLine="false"
+        android:text="@string/recommend_plot"
+        android:textColor="@color/black"
+        android:textSize="24sp"
+        app:drawableTopCompat="@drawable/ic_recommend"
+        app:layout_constraintBottom_toTopOf="@+id/av_actionFragmentBanner"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tv_checkMyPlot" />
+
+    <TextView
+        android:id="@+id/tv_checkMyPlot"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="32dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginBottom="16dp"
+        android:drawablePadding="8dp"
+        android:gravity="center_horizontal"
+        android:maxLines="3"
+        android:minLines="2"
+        android:singleLine="false"
+        android:text="@string/check_my_plot"
+        android:textColor="@color/black"
+        android:textSize="24sp"
+        app:drawableTopCompat="@drawable/ic_check"
+        app:layout_constraintBottom_toTopOf="@+id/tv_recommendPlot"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <com.google.android.gms.ads.AdView
+        android:id="@+id/av_actionFragmentBanner"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        app:adSize="BANNER"
+        app:adUnitId="ca-app-pub-5575310058998232/5854634701"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+</androidx.constraintlayout.widget.ConstraintLayout>

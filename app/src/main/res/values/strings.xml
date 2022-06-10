@@ -1,0 +1,42 @@
+<resources>
+    <string name="app_name" translatable="false">E-City</string>
+    <string name="city_select_fragment">Please, choose a settlement of Ukraine for urban analysis:</string>
+    <string name="odesa">Odesa</string>
+    <string name="kyiv">Kyiv (under construction)</string>
+    <string name="kharkiv">Kharkiv (under construction)</string>
+    <string name="check_my_plot">Check urban planning restrictions for my plot</string>
+    <string name="select_your_city">Select your city</string>
+    <string name="recommend_plot">Recommend me a land plot for my need</string>
+    <string name="choose_my_location">Use my current location</string>
+    <string name="enter_address">Enter the desired address (w/o the city name)</string>
+    <string name="pick_location_on_map">Pick location on map</string>
+    <string name="select_city">Start!</string>
+    <string name="find_zone">Find suitable zone!</string>
+    <string name="choose_intentions">Please, choose your business intentions:</string>
+    <string name="select_building_type">Choose building type</string>
+    <string name="select_building_group">Choose building group</string>
+    <string name="suitable_zones">Suitable zones:</string>
+    <string name="export_zones">Export results</string>
+    <string name="new_search">New search</string>
+    <string name="saved">Saved!</string>
+    <string name="not_saved">Not saved!</string>
+    <string name="selected_zones">Your selected zone is %1$s</string>
+    <string name="show_selected_zone">Show zone details</string>
+    <string name="preferred">1. Preferred:</string>
+    <string name="accompanying">2.Accompanying:</string>
+    <string name="acceptable">3. Acceptable:</string>
+    <string name="export_data">Export data to:</string>
+    <string name="choose_file_type">Choose file type</string>
+    <string name="save">Save</string>
+    <string name="select_directory_path">Choose path to file</string>
+    <string name="path_to_file">Path to file: %1$s</string>
+    <string name="path_not_set">Path not set</string>
+    <string name="enter_file_name">Enter file name</string>
+    <string name="give_location_permission">Please, grant location permission</string>
+    <string name="give_storage_permission">Please, grant storage permission</string>
+    <string name="back">Back</string>
+    <string name="forward">Forward</string>
+    <string name="preferred_one">Preferred</string>
+    <string name="accompanying_one">Accompanying</string>
+    <string name="acceptable_one">Acceptable</string>
+</resources>

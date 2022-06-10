@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="city_names">
+        <item>@string/select_your_city</item>
+        <item>@string/odesa</item>
+        <item>@string/kyiv</item>
+        <item>@string/kharkiv</item>
+    </string-array>
+    <string-array name="building_groups">
+        <item>@string/select_building_group</item>
+    </string-array>
+    <string-array name="building_types">
+        <item>@string/select_building_type</item>
+    </string-array>
+    <string-array name="file_types">
+        <item>@string/choose_file_type</item>
+        <item>.pdf</item>
+        <item>.doc</item>
+    </string-array>
+    <string-array name="file_paths" >
+        <item>@string/path_not_set</item>
+        <item>@string/select_directory_path</item>
+    </string-array>
+</resources>
