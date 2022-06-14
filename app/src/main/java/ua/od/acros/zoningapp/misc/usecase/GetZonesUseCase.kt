@@ -5,5 +5,5 @@ import ua.od.acros.zoningapp.misc.repository.ZonesRepository
 import javax.inject.Inject
 
 class GetZonesUseCase @Inject constructor(private val repository: ZonesRepository) {
-    suspend fun execute(file: String): List<Zone>? = repository.getZones(file)
+    suspend fun execute(cityName: String): List<Zone>? = repository.getZones(cityName)
 }

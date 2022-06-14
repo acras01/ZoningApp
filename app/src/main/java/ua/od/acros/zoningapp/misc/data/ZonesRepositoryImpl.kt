@@ -14,12 +14,21 @@ class ZonesRepositoryImpl @Inject constructor(
     private val application: Application
 ): ZonesRepository {
 
-    override suspend fun getZones(filename: String): List<Zone>? {
-        var zones: List<Zone>? = listOf<Zone>()
+    override suspend fun getZones(cityName: String): List<Zone> {
+        val zones: MutableList<Zone> = mutableListOf<Zone>()
         withContext(Dispatchers.IO) {
+            val fileList: Array<String>?
             try {
-                val stream = application.assets.open(filename)
-                zones = stream.let { inputStream ->  ZoneSVGParser().parse(inputStream) }
+                fileList = application.assets.list("")
+                if (fileList != null && fileList.isNotEmpty()) {
+                    fileList.forEach { file ->
+                        if (file.contains(cityName) && file.contains("svg")) {
+                            val stream = application.assets.open(file)
+                            val curZones = stream.let { inputStream -> ZoneSVGParser().parse(inputStream) }
+                            zones.addAll(curZones)
+                        }
+                    }
+                }
             } catch (e: Exception) {
                 e.printStackTrace()
             }

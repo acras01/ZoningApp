@@ -1,6 +1,9 @@
 package ua.od.acros.zoningapp.ui.main
 
+import android.location.Location
+import android.location.LocationManager
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -25,10 +28,6 @@ import ua.od.acros.zoningapp.misc.utils.screenValue
 import ua.od.acros.zoningapp.vm.MainViewModel
 import ua.od.acros.zoningapp.R
 import ua.od.acros.zoningapp.databinding.FragmentSelectZoneOnMapBinding
-import ua.od.acros.zoningapp.misc.utils.EllipticalMercator
-import kotlin.math.abs
-import kotlin.math.cos
-import kotlin.math.sqrt
 
 @AndroidEntryPoint
 class SelectZoneOnMapFragment : Fragment() {
@@ -44,7 +43,8 @@ class SelectZoneOnMapFragment : Fragment() {
     private val sharedViewModel: MainViewModel by activityViewModels()
 
     private val onMapClickListener = GoogleMap.OnMapClickListener { latLng ->
-        addMarker(latLng)
+        if (zones != null)
+            addMarker(latLng)
     }
 
     private val callback = OnMapReadyCallback { map ->
@@ -74,12 +74,14 @@ class SelectZoneOnMapFragment : Fragment() {
 
         _binding = FragmentSelectZoneOnMapBinding.inflate(inflater, container, false)
 
+        binding.etEnterAddress.isEnabled = false
         binding.btnCurrentLocation.isEnabled = false
-
         binding.btnShowSelectedZone.isEnabled = false
 
         sharedViewModel.cityZones.observe(viewLifecycleOwner) { zones ->
             this.zones = zones
+            binding.etEnterAddress.isEnabled = true
+            binding.btnCurrentLocation.isEnabled = sharedViewModel.locationPerm.value == true
         }
 
         sharedViewModel.buildingList.observe(viewLifecycleOwner) { buildings ->
@@ -94,10 +96,6 @@ class SelectZoneOnMapFragment : Fragment() {
             }
             return@OnEditorActionListener false
         })
-
-        sharedViewModel.locationPerm.observe(viewLifecycleOwner) { isEnabled ->
-            binding.btnCurrentLocation.isEnabled = isEnabled
-        }
 
         sharedViewModel.location.observe(viewLifecycleOwner) { location ->
             if (::googleMap.isInitialized && location != null) {
@@ -129,15 +127,18 @@ class SelectZoneOnMapFragment : Fragment() {
     private fun addMarker(latLng: LatLng) {
         googleMap.clear()
         val tag = drawZone(latLng)
-        val iconGen = IconGenerator(context)
-        iconGen.setStyle(STYLE_WHITE)
-        marker = googleMap.addMarker( MarkerOptions()
-            .icon(BitmapDescriptorFactory.fromBitmap(iconGen.makeIcon(tag)))
-            .title(tag)
-            .position(latLng)
-            .anchor(iconGen.anchorU, iconGen.anchorV)
-        )
-        binding.btnShowSelectedZone.isEnabled = true
+        if (tag != "") {
+            val iconGen = IconGenerator(context)
+            iconGen.setStyle(STYLE_WHITE)
+            marker = googleMap.addMarker(
+                MarkerOptions()
+                    .icon(BitmapDescriptorFactory.fromBitmap(iconGen.makeIcon(tag)))
+                    .title(tag)
+                    .position(latLng)
+                    .anchor(iconGen.anchorU, iconGen.anchorV)
+            )
+            binding.btnShowSelectedZone.isEnabled = true
+        }
     }
 
     private fun drawZone(latLng: LatLng): String {
@@ -156,7 +157,17 @@ class SelectZoneOnMapFragment : Fragment() {
                 }
             }
             zone.circles.forEach Circles@{ circle ->
-                if (checkIfPointInCircle(latLng, circle)) {
+                val centerLocation = Location(LocationManager.GPS_PROVIDER)
+                    .apply {
+                        latitude = circle.center.latitude
+                        longitude = circle.center.longitude
+                    }
+                val currentLocation = Location(LocationManager.GPS_PROVIDER)
+                    .apply {
+                    latitude = latLng.latitude
+                    longitude = latLng.longitude
+                    }
+                if (currentLocation.distanceTo(centerLocation) <= circle.radius) {
                     googleMap.addCircle(
                         CircleOptions()
                             .center(circle.center)
@@ -182,17 +193,6 @@ class SelectZoneOnMapFragment : Fragment() {
         )
         googleMap.moveCamera(cu)
         googleMap.animateCamera(CameraUpdateFactory.zoomTo(10f), 2000, null)
-    }
-
-    private fun checkIfPointInCircle(latLng: LatLng, circle: Zone.Circle): Boolean {
-        val mercator = EllipticalMercator()
-        val ky = 40000 / 360
-        val center = mercator.merc(circle.center)
-        val check = mercator.merc(latLng)
-        val kx = cos(Math.PI * center.y / 180.0) * ky
-        val dx = abs(center.x - check.x) * kx
-        val dy = abs(center.y - check.y) * ky
-        return sqrt(dx * dx + dy * dy) <= circle.radius
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {

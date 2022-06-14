@@ -52,7 +52,7 @@ class MainViewModel @Inject constructor(
 
     fun prepareMapForCity(city: City) {
         jobSVG = viewModelScope.launch {
-            val fileName = city.zones
+            val fileName = city.city
             val zones = getZonesUseCase.execute(fileName)
             cityZones.postValue(zones)
         }

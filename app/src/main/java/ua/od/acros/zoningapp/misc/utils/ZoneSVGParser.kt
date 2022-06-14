@@ -7,7 +7,6 @@ import com.google.maps.android.geometry.Point
 import org.xmlpull.v1.XmlPullParser
 import java.io.InputStream
 
-
 class ZoneSVGParser {
 
     // We don't use namespaces
@@ -19,6 +18,8 @@ class ZoneSVGParser {
     private var offsetY: Double = 0.0
     private var scaleX: Double = 1.0
     private var scaleY: Double = 1.0
+    private var width: Double = 1.0
+    private var height: Double = 1.0
 
     fun parse(inputStream: InputStream): List<Zone> {
         val parser: XmlPullParser = Xml.newPullParser()
@@ -31,10 +32,14 @@ class ZoneSVGParser {
     private fun parseZonesFromSVG(parser: XmlPullParser): List<Zone> {
         val zones = mutableListOf<Zone>()
         parser.require(XmlPullParser.START_TAG, ns, "svg")
-        offsetX = parser.getAttributeValue(null, "offsetX").toDouble()
-        offsetY = parser.getAttributeValue(null, "offsetY").toDouble()
+
         scaleX = parser.getAttributeValue(null, "scaleX").toDouble()
         scaleY = parser.getAttributeValue(null, "scaleY").toDouble()
+        width = parser.getAttributeValue(null, "width_px").toDouble()
+        height = parser.getAttributeValue(null, "height_px").toDouble()
+        offsetX = parser.getAttributeValue(null, "offsetX").toDouble()
+        offsetY = parser.getAttributeValue(null, "offsetY").toDouble()
+
         while (parser.next() != XmlPullParser.END_TAG) {
             if (parser.eventType != XmlPullParser.START_TAG) {
                 continue
@@ -76,9 +81,6 @@ class ZoneSVGParser {
                 "polygon" ->  {
                     polygons.add(readPolygon(parser))
                 }
-                "poligon" ->  {
-                    polygons.add(readPoligon(parser))
-                }
                 "circle" ->  {
                     circles.add(readCircle(parser))
                 }
@@ -92,14 +94,17 @@ class ZoneSVGParser {
         parser.require(XmlPullParser.START_TAG, ns, "polygon")
         val fill = hex2aRGB(parser.getAttributeValue(null, "fill"))
         val stroke = hex2aRGB(parser.getAttributeValue(null, "stroke"))
-        val pointsStr = parser.getAttributeValue(null, "points")
+        var pointsStr = parser.getAttributeValue(null, "points")
+        if (pointsStr.last() == ' ')
+            pointsStr = pointsStr.dropLast(1)
         val points = mutableListOf<LatLng>()
         pointsStr.split(" ").forEach { point ->
-            val coords = point.split(",")
-            if (coords.size == 2) {
-                val x = coords[0].toDouble() / scaleX + offsetX
-                val y = offsetY - coords[1].toDouble() / scaleY
-                points.add(mercator.revMerc(Point(x, y)))
+            val coordinates = point.split(",")
+            if (coordinates.size == 2) {
+                val x = coordinates[0].toDouble()
+                val y = coordinates[1].toDouble()
+                val xy = convertToCenter(x, y)
+                points.add(mercator.revMerc(Point(xy.first, xy.second)))
             }
         }
         parser.next()
@@ -107,37 +112,20 @@ class ZoneSVGParser {
         return Zone.Polygon(points, fill, stroke)
     }
 
-    private fun readPoligon(parser: XmlPullParser): Zone.Polygon {
-        parser.require(XmlPullParser.START_TAG, ns, "poligon")
-        val fill = hex2aRGB(parser.getAttributeValue(null, "fill"))
-        val stroke = hex2aRGB(parser.getAttributeValue(null, "stroke"))
-        val pointsStr = parser.getAttributeValue(null, "points")
-        val points = mutableListOf<LatLng>()
-        pointsStr.split(", ").forEach { point ->
-            val coords = point.split(" ")
-            if (coords.size == 2) {
-                val x = coords[0].toDouble() / scaleX + offsetX
-                val y = offsetY - coords[1].toDouble() / scaleY
-                points.add(mercator.revMerc(Point(y, x)))
-            }
-        }
-        parser.next()
-        parser.require(XmlPullParser.END_TAG, ns, "poligon")
-        return Zone.Polygon(points, fill, stroke)
-    }
-
     private fun readCircle(parser: XmlPullParser): Zone.Circle {
         parser.require(XmlPullParser.START_TAG, ns, "circle")
         val fill = hex2aRGB(parser.getAttributeValue(null, "fill"))
         val stroke = hex2aRGB(parser.getAttributeValue(null, "stroke"))
-        val xStr = parser.getAttributeValue(null, "cx")
-        val yStr = parser.getAttributeValue(null, "cx")
-        val x = xStr.toDouble() / scaleX + offsetX
-        val y = offsetY - yStr.toDouble() / scaleY
-        val center = mercator.revMerc(Point(x, y))
-        val radius = parser.getAttributeValue(null, "r").toDouble()
+        val cx = parser.getAttributeValue(null, "cx").toDouble()
+        val cy = parser.getAttributeValue(null, "cy").toDouble()
+        val xy = convertToCenter(cx, cy)
+        val center = mercator.revMerc(Point(xy.first, xy.second))
+        val radius = parser.getAttributeValue(null, "r").toDouble() * 2 / (scaleX + scaleY)
         parser.next()
         parser.require(XmlPullParser.END_TAG, ns, "circle")
+
+        val yx = mercator.merc(LatLng(46.452131, 30.673344))
+
         return Zone.Circle(center, radius, fill, stroke)
     }
 
@@ -153,5 +141,15 @@ class ZoneSVGParser {
             Integer.valueOf(colorStr.substring(3, 5), 16),
             Integer.valueOf(colorStr.substring(5, 7), 16)
         )
+    }
+
+    private fun convertToCenter(x: Double, y: Double): Pair<Double, Double> {
+        var _x = x
+        var _y = y
+        _x -= width / 2
+        _x = offsetX + _x / scaleX
+        _y = height / 2 - _y
+        _y = offsetY + _y / scaleY
+        return _x to _y
     }
 }
