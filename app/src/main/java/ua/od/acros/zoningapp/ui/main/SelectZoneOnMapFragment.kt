@@ -3,7 +3,6 @@ package ua.od.acros.zoningapp.ui.main
 import android.location.Location
 import android.location.LocationManager
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -48,7 +47,7 @@ class SelectZoneOnMapFragment : Fragment() {
     }
 
     private val callback = OnMapReadyCallback { map ->
-        val city = sharedViewModel.city.value
+        val city = sharedViewModel.mCity.value
         if (city != null) {
             googleMap = map
             googleMap.setOnMapClickListener(onMapClickListener)
@@ -78,26 +77,26 @@ class SelectZoneOnMapFragment : Fragment() {
         binding.btnCurrentLocation.isEnabled = false
         binding.btnShowSelectedZone.isEnabled = false
 
-        sharedViewModel.cityZones.observe(viewLifecycleOwner) { zones ->
+        sharedViewModel.mCityZones.observe(viewLifecycleOwner) { zones ->
             this.zones = zones
             binding.etEnterAddress.isEnabled = true
-            binding.btnCurrentLocation.isEnabled = sharedViewModel.locationPerm.value == true
+            binding.btnCurrentLocation.isEnabled = sharedViewModel.mLocationPerm.value == true
         }
 
-        sharedViewModel.buildingList.observe(viewLifecycleOwner) { buildings ->
+        sharedViewModel.mBuildingList.observe(viewLifecycleOwner) { buildings ->
             this.buildings = buildings
         }
 
         binding.etEnterAddress.setOnEditorActionListener(TextView.OnEditorActionListener { view, actionId, _ ->
             if (actionId == EditorInfo.IME_ACTION_DONE) {
-                val address = "${sharedViewModel.city.value?.city} ${view.text}"
+                val address = "${sharedViewModel.mCity.value?.city} ${view.text}"
                 sharedViewModel.getLocationFromAddress(address)
                 //return@OnEditorActionListener true
             }
             return@OnEditorActionListener false
         })
 
-        sharedViewModel.location.observe(viewLifecycleOwner) { location ->
+        sharedViewModel.mLocation.observe(viewLifecycleOwner) { location ->
             if (::googleMap.isInitialized && location != null) {
                 addMarker(location)
             }
@@ -109,9 +108,9 @@ class SelectZoneOnMapFragment : Fragment() {
 
         binding.btnShowSelectedZone.clicks().subscribe {
             val result = sharedViewModel.getInfoForZone(marker?.title)
-            sharedViewModel.selectedZone.postValue(marker?.title to result)
+            sharedViewModel.setSelectedZone(marker?.title to result)
             googleMap.snapshot { bitmap ->
-                sharedViewModel.mapBitmap.postValue(bitmap)
+                sharedViewModel.setBitmap(bitmap)
             }
             (activity as MainActivity).askForStoragePermission()
             findNavController().navigate(R.id.action_selectZoneOnMapFragment_to_zoneExportFragment)

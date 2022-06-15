@@ -1,6 +1,11 @@
 package ua.od.acros.zoningapp.vm
 
+import android.content.Intent
 import android.graphics.Bitmap
+import android.net.Uri
+import android.os.Environment
+import android.provider.DocumentsContract
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -17,7 +22,6 @@ import java.lang.reflect.Type
 import java.util.regex.Pattern
 import javax.inject.Inject
 
-
 @HiltViewModel
 class MainViewModel @Inject constructor(
     private val getZonesUseCase: GetZonesUseCase,
@@ -27,18 +31,68 @@ class MainViewModel @Inject constructor(
     private val getSavePNGUseCase: GetSavePNGUseCase
 ) : ViewModel() {
 
-    val directorySelected: MutableLiveData<String> = MutableLiveData()
-    val selectedZone: MutableLiveData<Pair<String?, Array<String>?>> = MutableLiveData()
-    val selectedBuildingsList: MutableLiveData<List<Building>?> = MutableLiveData()
-    val cityList: MutableLiveData<List<City>?> = MutableLiveData()
-    val buildingList: MutableLiveData<List<Building>?> = MutableLiveData()
-    var city: MutableLiveData<City> = MutableLiveData()
-    val cityZones: MutableLiveData<List<Zone>?> = MutableLiveData()
-    val locationPerm: MutableLiveData<Boolean> = MutableLiveData(false)
-    val storagePerm: MutableLiveData<Boolean> = MutableLiveData(false)
-    val location: MutableLiveData<LatLng?> = MutableLiveData()
-    val savePNG: MutableLiveData<Int> = MutableLiveData()
-    val mapBitmap: MutableLiveData<Bitmap> = MutableLiveData()
+    private val directorySelected: MutableLiveData<String> = MutableLiveData()
+    val mDirectorySelected: LiveData<String> get() = directorySelected
+    fun setDirectory(uri: Uri) {
+        val docId = DocumentsContract.getTreeDocumentId(uri)
+        val split = docId.split(":")
+        val type = split[0]
+        if ("primary".equals(type, ignoreCase = true)) {
+            directorySelected.value =
+                "${Environment.getExternalStorageDirectory()}/${split[1]}"
+        }
+    }
+
+    private val selectedZone: MutableLiveData<Pair<String?, Array<String>?>> = MutableLiveData()
+    val mSelectedZone: LiveData<Pair<String?, Array<String>?>> get() = selectedZone
+    fun setSelectedZone(pair: Pair<String?, Array<String>?>) {
+        selectedZone.value = pair
+    }
+
+    private val selectedBuildingsList: MutableLiveData<List<Building>?> = MutableLiveData()
+    val mSelectedBuildingsList: LiveData<List<Building>?> get() = selectedBuildingsList
+    fun setSelectedBuildingsList(groupSelected: String, typeSelected: String) {
+        selectedBuildingsList.value = getListForGroupAndType(groupSelected, typeSelected)
+    }
+
+    private val cityList: MutableLiveData<List<City>?> = MutableLiveData()
+    val mCityList: LiveData<List<City>?> get() = cityList
+
+    private val buildingList: MutableLiveData<List<Building>?> = MutableLiveData()
+    val mBuildingList: LiveData<List<Building>?> get() = buildingList
+
+    private var city: MutableLiveData<City> = MutableLiveData()
+    val mCity: LiveData<City> get() = city
+    fun setCity(city: City) {
+        this.city.value = city
+    }
+
+    private val cityZones: MutableLiveData<List<Zone>?> = MutableLiveData()
+    val mCityZones: LiveData<List<Zone>?> get() = cityZones
+
+    private val locationPerm: MutableLiveData<Boolean> = MutableLiveData(false)
+    val mLocationPerm: LiveData<Boolean> get() = locationPerm
+    fun setLocationPermission(permission: Boolean) {
+        locationPerm.value = permission
+    }
+
+    private val storagePerm: MutableLiveData<Boolean> = MutableLiveData(false)
+    val mStoragePerm: LiveData<Boolean> get() = storagePerm
+    fun setStoragePermission(permission: Boolean) {
+        storagePerm.value = permission
+    }
+
+    private val location: MutableLiveData<LatLng?> = MutableLiveData()
+    val mLocation: LiveData<LatLng?> get() = location
+
+    private val savePNG: MutableLiveData<Int> = MutableLiveData()
+    val mSavePNG: LiveData<Int> get() = savePNG
+
+    private val mapBitmap: MutableLiveData<Bitmap> = MutableLiveData()
+    val mMapBitmap: LiveData<Bitmap> get() = mapBitmap
+    fun setBitmap(bitmap: Bitmap?) {
+        mapBitmap.value = bitmap
+    }
 
     private var jobSVG: Job? = null
     private var jobCities: Job? = null
@@ -164,7 +218,7 @@ class MainViewModel @Inject constructor(
         return null
     }
 
-    fun getListForGroupAndType(group: String, type: String): List<Building>? {
+    private fun getListForGroupAndType(group: String, type: String): List<Building>? {
         if (buildingList.value != null) {
             return buildingList.value!!
                 .filter { building -> building.group == group }

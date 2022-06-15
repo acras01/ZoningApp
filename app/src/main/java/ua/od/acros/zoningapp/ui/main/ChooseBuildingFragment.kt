@@ -52,7 +52,7 @@ class ChooseBuildingFragment : Fragment(), AdapterView.OnItemSelectedListener {
         val adRequest = AdRequest.Builder().build()
         binding.avSelectBuildingFragmentBanner.loadAd(adRequest)
 
-        sharedViewModel.buildingList.observe(viewLifecycleOwner) { buildingList ->
+        sharedViewModel.mBuildingList.observe(viewLifecycleOwner) { buildingList ->
             if (buildingList != null) {
                 buildings = buildingList
                 val groupList =
@@ -78,8 +78,7 @@ class ChooseBuildingFragment : Fragment(), AdapterView.OnItemSelectedListener {
         }
 
         binding.btnFindZone.clicks().subscribe() {
-            sharedViewModel.selectedBuildingsList
-                .postValue(sharedViewModel.getListForGroupAndType(groupSelected, typeSelected))
+            sharedViewModel.setSelectedBuildingsList(groupSelected, typeSelected)
             findNavController().navigate(R.id.action_chooseBuildingFragment_to_zonesMapsFragment)
         }
 
@@ -136,7 +135,7 @@ class ChooseBuildingFragment : Fragment(), AdapterView.OnItemSelectedListener {
                         typeSelected = textView.text.toString()
                 }
             }
-            if (sharedViewModel.locationPerm.value == true) {
+            if (sharedViewModel.mLocationPerm.value == true) {
                 binding.btnFindZone.isEnabled = typeSelectionMade && groupSelectionMade
             } else
                 Toast.makeText(context, R.string.give_location_permission, Toast.LENGTH_LONG).show()

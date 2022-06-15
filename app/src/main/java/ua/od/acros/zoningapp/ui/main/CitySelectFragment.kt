@@ -10,7 +10,6 @@ import android.widget.TextView
 import androidx.activity.OnBackPressedCallback
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
-import androidx.lifecycle.MutableLiveData
 import androidx.navigation.fragment.findNavController
 import com.google.android.gms.ads.AdRequest
 import com.google.android.gms.ads.MobileAds
@@ -41,7 +40,7 @@ class CitySelectFragment : Fragment(), AdapterView.OnItemSelectedListener {
         val adRequest = AdRequest.Builder().build()
         binding.avSelectFragmentBanner.loadAd(adRequest)
 
-        sharedViewModel.cityList.observe(viewLifecycleOwner) { list ->
+        sharedViewModel.mCityList.observe(viewLifecycleOwner) { list ->
             if (list != null) {
                 val spinnerAdapter: CustomAdapter<String>? = context?.let {
                     CustomAdapter(
@@ -58,7 +57,7 @@ class CitySelectFragment : Fragment(), AdapterView.OnItemSelectedListener {
                 binding.btnSelect?.clicks()?.subscribe {
                     val id = (binding.spCities?.selectedItemId?.minus(1))?.toInt()
                     val city = list[id!!]
-                    sharedViewModel.city = MutableLiveData(city)
+                    sharedViewModel.setCity(city)
                     sharedViewModel.parseBuildings(city)
                     sharedViewModel.prepareMapForCity(city)
                     findNavController().navigate(R.id.action_selectFragment_to_chooseActionFragment)

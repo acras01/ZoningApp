@@ -99,18 +99,18 @@ class HTMLPrintFragment : Fragment() {
                 THIRD +
                 "<h3>{ZONE3_PLACEHOLDER}</h3>\n"
 
-        var zoneDesc = sharedViewModel.selectedZone.value!!.first
+        var zoneDesc = sharedViewModel.mSelectedZone.value!!.first
         html = html.replace("{ZONE_PLACEHOLDER}", zoneDesc!!)
-        zoneDesc = sharedViewModel.selectedZone.value!!.second!![0]
+        zoneDesc = sharedViewModel.mSelectedZone.value!!.second!![0]
         html = html.replace("{ZONE1_PLACEHOLDER}", zoneDesc)
-        zoneDesc = sharedViewModel.selectedZone.value!!.second!![1]
+        zoneDesc = sharedViewModel.mSelectedZone.value!!.second!![1]
         html = html.replace("{ZONE2_PLACEHOLDER}", zoneDesc)
-        zoneDesc = sharedViewModel.selectedZone.value!!.second!![2]
+        zoneDesc = sharedViewModel.mSelectedZone.value!!.second!![2]
         html = html.replace("{ZONE3_PLACEHOLDER}", zoneDesc)
         html = html.replace("\n", "<br>")
 
         // Convert bitmap to Base64 encoded image for web
-        val bitmap: Bitmap = sharedViewModel.mapBitmap.value!!
+        val bitmap: Bitmap = sharedViewModel.mMapBitmap.value!!
         val byteArrayOutputStream = ByteArrayOutputStream()
         bitmap.compress(Bitmap.CompressFormat.PNG, 100, byteArrayOutputStream)
         val byteArray: ByteArray = byteArrayOutputStream.toByteArray()
@@ -131,7 +131,7 @@ class HTMLPrintFragment : Fragment() {
                 "<p>&nbsp;</p>\n" +
                 "<h3>{LEGEND_PLACEHOLDER}</h3>"
 
-        var zoneDesc = sharedViewModel.selectedZone.value!!.first
+        var zoneDesc = sharedViewModel.mSelectedZone.value!!.first
         var type = ""
         var legend = ""
         when (zoneDesc?.last()) {
@@ -150,13 +150,13 @@ class HTMLPrintFragment : Fragment() {
         }
         html = html.replace("{ZONE_PLACEHOLDER}", zoneDesc!!.dropLast(1))
         html = html.replace("{TYPE_PLACEHOLDER}", type)
-        zoneDesc = sharedViewModel.selectedZone.value!!.second!![0]
+        zoneDesc = sharedViewModel.mSelectedZone.value!!.second!![0]
         html = html.replace("{GROUP_PLACEHOLDER}", zoneDesc)
         html = html.replace("{LEGEND_PLACEHOLDER}", legend)
         html = html.replace("\n", "<br>")
 
         // Convert bitmap to Base64 encoded image for web
-        val bitmap: Bitmap = sharedViewModel.mapBitmap.value!!
+        val bitmap: Bitmap = sharedViewModel.mMapBitmap.value!!
         val byteArrayOutputStream = ByteArrayOutputStream()
         bitmap.compress(Bitmap.CompressFormat.PNG, 100, byteArrayOutputStream)
         val byteArray: ByteArray = byteArrayOutputStream.toByteArray()

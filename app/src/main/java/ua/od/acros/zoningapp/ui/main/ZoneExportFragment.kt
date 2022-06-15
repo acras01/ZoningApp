@@ -40,7 +40,7 @@ class ZoneExportFragment : Fragment() {
         val adRequest = AdRequest.Builder().build()
         binding.avZoneExportFragmentBanner.loadAd(adRequest)
 
-        sharedViewModel.selectedZone.observe(viewLifecycleOwner) { zone ->
+        sharedViewModel.mSelectedZone.observe(viewLifecycleOwner) { zone ->
             if(zone.first != null && zone.second != null) {
                 binding.tvSelectedZone.text = getString(R.string.selected_zones, zone.first)
                 binding.tvZoneDesc2.text = zone.second!![0]
@@ -49,7 +49,7 @@ class ZoneExportFragment : Fragment() {
             }
         }
 
-        sharedViewModel.storagePerm.observe(viewLifecycleOwner) {
+        sharedViewModel.mStoragePerm.observe(viewLifecycleOwner) {
             if (it == true)
                 binding.btnExportResults.isEnabled = true
             else

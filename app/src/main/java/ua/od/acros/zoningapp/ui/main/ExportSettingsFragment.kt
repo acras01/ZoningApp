@@ -78,7 +78,7 @@ class ExportSettingsFragment : Fragment(), AdapterView.OnItemSelectedListener {
         spFileAdapter?.setNotifyOnChange(true)
         binding.spFilePath.adapter = spFileAdapter
         binding.spFilePath.onItemSelectedListener = this
-        sharedViewModel.directorySelected.observe(viewLifecycleOwner) {
+        sharedViewModel.mDirectorySelected.observe(viewLifecycleOwner) {
             directoryPath = it
             spFileAdapter?.clear()
             val newList = listOf(directoryPath,getString(R.string.select_directory_path))
@@ -116,7 +116,7 @@ class ExportSettingsFragment : Fragment(), AdapterView.OnItemSelectedListener {
                     binding.spFilePath -> {
                         (activity as MainActivity).dirRequest.launch(null)
                         if (fileType != "" && fileName != "")
-                            if (sharedViewModel.storagePerm.value == true) {
+                            if (sharedViewModel.mStoragePerm.value == true) {
                                 binding.btnExport.isEnabled = true
                             } else
                                 Toast.makeText(context, R.string.give_storage_permission, Toast.LENGTH_LONG).show()

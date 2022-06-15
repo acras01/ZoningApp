@@ -24,13 +24,7 @@ class MainActivity : AppCompatActivity() {
     val dirRequest = registerForActivityResult(ActivityResultContracts.OpenDocumentTree()) { uri ->
         uri?.let {
             contentResolver.takePersistableUriPermission(it, Intent.FLAG_GRANT_READ_URI_PERMISSION)
-            val docId = DocumentsContract.getTreeDocumentId(it)
-            val split = docId.split(":")
-            val type = split[0]
-            if ("primary".equals(type, ignoreCase = true)) {
-                sharedViewModel.directorySelected.postValue(
-                    "${Environment.getExternalStorageDirectory()}/${split[1]}")
-            }
+            sharedViewModel.setDirectory(uri)
         }
     }
 
@@ -38,32 +32,21 @@ class MainActivity : AppCompatActivity() {
         registerForActivityResult(
             ActivityResultContracts.RequestMultiplePermissions()) { result ->
             var allAreGranted = true
-            for(b in result.values) {
+            for (b in result.values) {
                 allAreGranted = allAreGranted && b
             }
-
-            if(allAreGranted) {
-                sharedViewModel.storagePerm.postValue(true)
-            } else {
-                sharedViewModel.storagePerm.postValue(false)
-            }
+            sharedViewModel.setStoragePermission(allAreGranted)
         }
 
     private val locationResultLauncher: ActivityResultLauncher<Array<String>> =
         registerForActivityResult(
             ActivityResultContracts.RequestMultiplePermissions()) { result ->
             var allAreGranted = true
-            for(b in result.values) {
+            for (b in result.values) {
                 allAreGranted = allAreGranted && b
             }
-
-            if(allAreGranted) {
-                sharedViewModel.locationPerm.postValue(true)
-            } else {
-                sharedViewModel.locationPerm.postValue(false)
-            }
+            sharedViewModel.setLocationPermission(allAreGranted)
         }
-
 
     override fun onCreate(savedInstanceState: Bundle?) {
         val splashScreen = installSplashScreen()
@@ -79,7 +62,7 @@ class MainActivity : AppCompatActivity() {
             ActivityCompat.checkSelfPermission(
                 applicationContext,
                 Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
-            sharedViewModel.storagePerm.postValue(true)
+            sharedViewModel.setStoragePermission(true)
         } else {
             val appPerms = arrayOf(
                 Manifest.permission.WRITE_EXTERNAL_STORAGE,
@@ -96,7 +79,7 @@ class MainActivity : AppCompatActivity() {
             ActivityCompat.checkSelfPermission(
                 applicationContext,
                 Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
-            sharedViewModel.locationPerm.postValue(true)
+            sharedViewModel.setLocationPermission(true)
         } else {
             val appPerms = arrayOf(
                 Manifest.permission.ACCESS_FINE_LOCATION,

@@ -37,17 +37,17 @@ class ChooseActionFragment : Fragment() {
         binding.avActionFragmentBanner.loadAd(adRequest)
 
         val onCheckPlot: () -> Unit = {
-            if (sharedViewModel.locationPerm.value == true) {
+            if (sharedViewModel.mLocationPerm.value == true) {
                 findNavController().navigate(R.id.action_chooseActionFragment_to_mapsFragment)
             } else
                 Toast.makeText(context, R.string.give_location_permission, Toast.LENGTH_LONG).show()
         }
-        binding.tvCheckMyPlot.clicks().subscribe() { onCheckPlot() }
+        binding.tvCheckMyPlot.clicks().subscribe { onCheckPlot() }
 
         val onRecommendPlot: () -> Unit = {
             findNavController().navigate(R.id.action_chooseActionFragment_to_chooseBuildingFragment)
         }
-        binding.tvRecommendPlot.clicks().subscribe() { onRecommendPlot() }
+        binding.tvRecommendPlot.clicks().subscribe { onRecommendPlot() }
 
         return binding.root
     }

@@ -49,7 +49,7 @@ class ZonesMapFragment : Fragment() {
 
     private val callback = OnMapReadyCallback { map ->
 
-        val city = sharedViewModel.city.value
+        val city = sharedViewModel.mCity.value
         if (city != null) {
             googleMap = map
 
@@ -61,14 +61,12 @@ class ZonesMapFragment : Fragment() {
                     .build()
             )
 
-            val selectedBuildings = sharedViewModel.selectedBuildingsList.value
+            val selectedBuildings = sharedViewModel.mSelectedBuildingsList.value
             if (selectedBuildings != null) {
-                googleMap = map
-
                 var i = 1
                 var builder: LatLngBounds.Builder
                 var bounds: LatLngBounds?
-                sharedViewModel.cityZones.value?.forEach { zone ->
+                sharedViewModel.mCityZones.value?.forEach { zone ->
                     selectedBuildings.forEach { building ->
                         val code: StringBuilder = StringBuilder(building.toString())
                         val regex = Regex("code_[0-9]*=")
@@ -182,10 +180,10 @@ class ZonesMapFragment : Fragment() {
         }
 
         binding.btnExportResults.clicks().subscribe {
-            val list = sharedViewModel.selectedBuildingsList.value
+            val list = sharedViewModel.mSelectedBuildingsList.value
                 ?.map { building ->  mapBuilding(building) }
                 ?.toTypedArray()
-            sharedViewModel.selectedZone.postValue(zonesList[markerShown].first.title to list)
+            sharedViewModel.setSelectedZone(zonesList[markerShown].first.title to list)
             val area = zonesList[markerShown].second
             if (area is PolygonOptions) {
                 area.fillColor(0x7F00FF00)
@@ -207,7 +205,7 @@ class ZonesMapFragment : Fragment() {
 //                                fileName
 //                            )
 //                        }
-                    sharedViewModel.mapBitmap.postValue(bitmap)
+                    sharedViewModel.setBitmap(bitmap)
                     val args = Bundle()
                     args.putInt("id", FRAGMENT_ID)
                     findNavController().navigate(
@@ -218,14 +216,14 @@ class ZonesMapFragment : Fragment() {
             }
         }
 
-        sharedViewModel.storagePerm.observe(viewLifecycleOwner) {
+        sharedViewModel.mStoragePerm.observe(viewLifecycleOwner) {
             if (it)
                 binding.btnExportResults.isEnabled = true
             else
                 Toast.makeText(context, R.string.give_storage_permission, Toast.LENGTH_LONG).show()
         }
 
-        sharedViewModel.savePNG.observe(viewLifecycleOwner) { result ->
+        sharedViewModel.mSavePNG.observe(viewLifecycleOwner) { result ->
             var text = ""
             when (result) {
                 SavePNGRepositoryImpl.OK -> text = resources.getString(R.string.saved)
