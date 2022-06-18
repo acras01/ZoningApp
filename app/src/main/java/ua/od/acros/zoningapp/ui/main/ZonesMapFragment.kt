@@ -21,7 +21,6 @@ import com.google.maps.android.ktx.awaitMap
 import com.google.maps.android.ui.IconGenerator
 import com.google.maps.android.ui.IconGenerator.*
 import com.jakewharton.rxbinding4.view.clicks
-import kotlinx.coroutines.launch
 import ua.od.acros.zoningapp.misc.data.SavePNGRepositoryImpl
 import ua.od.acros.zoningapp.misc.utils.screenValue
 import ua.od.acros.zoningapp.vm.MainViewModel
@@ -68,10 +67,17 @@ class ZonesMapFragment : Fragment() {
         }
     }
 
-    private fun showZoneWithMarker(markerOptions: MarkerOptions) {
-        googleMap.addMarker(markerOptions)
-        googleMap.moveCamera(CameraUpdateFactory.newLatLng(markerOptions.position))
-        googleMap.animateCamera(CameraUpdateFactory.zoomTo(15f), 2000, null)
+    private fun showZoneWithMarker(zone: Pair<MarkerOptions, AbstractSafeParcelable>) {
+        googleMap.apply {
+            clear()
+            addMarker(zone.first)
+            if (zone.second is PolygonOptions)
+                addPolygon(zone.second as PolygonOptions)
+            else if (zone.second is CircleOptions)
+                addCircle(zone.second as CircleOptions)
+            moveCamera(CameraUpdateFactory.newLatLng(zone.first.position))
+            animateCamera(CameraUpdateFactory.zoomTo(15f), 2000, null)
+        }
     }
 
     override fun onCreateView(
@@ -166,7 +172,7 @@ class ZonesMapFragment : Fragment() {
         markerShown++
         if (markerShown == zonesList.size - 1)
             binding.btnForward.isEnabled = false
-        showZoneWithMarker(zonesList[markerShown].first)
+        showZoneWithMarker(zonesList[markerShown])
     }
 
     private fun showPreviousMarker() {
@@ -174,7 +180,7 @@ class ZonesMapFragment : Fragment() {
         markerShown--
         if (markerShown == 0)
             binding.btnBack.isEnabled = false
-        showZoneWithMarker(zonesList[markerShown].first)
+        showZoneWithMarker(zonesList[markerShown])
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -239,14 +245,12 @@ class ZonesMapFragment : Fragment() {
                                 bounds = builder.build()
                                 val mo =
                                     addMarker(bounds!!.center, i++.toString(), style, building.group, name)
-                                googleMap.addMarker(mo)
                                 val po = PolygonOptions().apply {
                                     addAll(polygon.points)
                                     strokeColor(polygon.strokeColor)
                                     strokeWidth(1f)
                                     fillColor(polygon.fillColor)
                                 }
-                                googleMap.addPolygon(po)
                                 zonesList.add(mo to po)
                             }
                             zone.circles.forEach { circle ->
@@ -257,10 +261,8 @@ class ZonesMapFragment : Fragment() {
                                     strokeWidth(1f)
                                     fillColor(circle.fillColor)
                                 }
-                                googleMap.addCircle(co)
                                 val mo =
                                     addMarker(circle.center, i++.toString(), style, building.group, zone.name)
-                                googleMap.addMarker(mo)
                                 zonesList.add(mo to co)
                             }
                         }
@@ -268,7 +270,7 @@ class ZonesMapFragment : Fragment() {
                 }
 
                 markerShown = 0
-                showZoneWithMarker(zonesList[markerShown].first)
+                showZoneWithMarker(zonesList[markerShown])
 
                 if (zonesList.size > 1)
                     binding.btnForward.isEnabled = true
