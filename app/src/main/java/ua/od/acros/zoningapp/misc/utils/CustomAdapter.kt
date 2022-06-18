@@ -22,7 +22,7 @@ class CustomAdapter<String>(
         parent: ViewGroup
     ): View {
         val view: TextView = super.getDropDownView(position, convertView, parent) as TextView
-        if(position == 0) {
+        if (position == 0) {
             view.setTextColor(Color.GRAY)
         }
         return view

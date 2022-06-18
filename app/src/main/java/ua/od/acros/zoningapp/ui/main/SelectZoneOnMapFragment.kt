@@ -11,12 +11,14 @@ import android.widget.TextView
 import androidx.activity.OnBackPressedCallback
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.google.android.gms.ads.AdRequest
 import com.google.android.gms.ads.MobileAds
 import com.google.android.gms.maps.*
 import com.google.android.gms.maps.model.*
 import com.google.maps.android.PolyUtil
+import com.google.maps.android.ktx.awaitMap
 import com.google.maps.android.ui.IconGenerator
 import com.google.maps.android.ui.IconGenerator.STYLE_WHITE
 import com.jakewharton.rxbinding4.view.clicks
@@ -44,21 +46,6 @@ class SelectZoneOnMapFragment : Fragment() {
     private val onMapClickListener = GoogleMap.OnMapClickListener { latLng ->
         if (zones != null)
             addMarker(latLng)
-    }
-
-    private val callback = OnMapReadyCallback { map ->
-        val city = sharedViewModel.mCity.value
-        if (city != null) {
-            googleMap = map
-            googleMap.setOnMapClickListener(onMapClickListener)
-
-            val coordinates = city.coordinates.split(",")
-            moveCameraToBounds(
-                LatLngBounds
-                .builder()
-                .include(LatLng(coordinates[0].toDouble(), coordinates[1].toDouble()))
-                .build())
-        }
     }
 
     private var _binding: FragmentSelectZoneOnMapBinding? = null
@@ -196,9 +183,26 @@ class SelectZoneOnMapFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        lifecycleScope.launchWhenCreated {
+            val mapFragment =
+                childFragmentManager.findFragmentById(R.id.map) as SupportMapFragment?
+            val map = mapFragment?.awaitMap()
+            if (map != null) {
+                googleMap = map
+                googleMap.setOnMapClickListener(onMapClickListener)
 
-        val mapFragment = childFragmentManager.findFragmentById(R.id.map) as SupportMapFragment?
-        mapFragment?.getMapAsync(callback)
+                val city = sharedViewModel.mCity.value
+                if (city != null) {
+                    val coordinates = city.coordinates.split(",")
+                    moveCameraToBounds(
+                        LatLngBounds
+                            .builder()
+                            .include(LatLng(coordinates[0].toDouble(), coordinates[1].toDouble()))
+                            .build()
+                    )
+                }
+            }
+        }
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {

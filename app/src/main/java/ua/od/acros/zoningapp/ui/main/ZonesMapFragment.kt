@@ -8,18 +8,20 @@ import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.google.android.gms.ads.AdRequest
 import com.google.android.gms.ads.MobileAds
 import com.google.android.gms.common.internal.safeparcel.AbstractSafeParcelable
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
-import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.*
+import com.google.maps.android.ktx.awaitMap
 import com.google.maps.android.ui.IconGenerator
 import com.google.maps.android.ui.IconGenerator.*
 import com.jakewharton.rxbinding4.view.clicks
+import kotlinx.coroutines.launch
 import ua.od.acros.zoningapp.misc.data.SavePNGRepositoryImpl
 import ua.od.acros.zoningapp.misc.utils.screenValue
 import ua.od.acros.zoningapp.vm.MainViewModel
@@ -47,92 +49,6 @@ class ZonesMapFragment : Fragment() {
         const val FRAGMENT_ID = 1
     }
 
-    private val callback = OnMapReadyCallback { map ->
-
-        val city = sharedViewModel.mCity.value
-        if (city != null) {
-            googleMap = map
-
-            val coordinates = city.coordinates.split(",")
-            moveCameraToBounds(
-                LatLngBounds
-                    .builder()
-                    .include(LatLng(coordinates[0].toDouble(), coordinates[1].toDouble()))
-                    .build()
-            )
-
-            val selectedBuildings = sharedViewModel.mSelectedBuildingsList.value
-            if (selectedBuildings != null) {
-                var i = 1
-                var builder: LatLngBounds.Builder
-                var bounds: LatLngBounds?
-                sharedViewModel.mCityZones.value?.forEach { zone ->
-                    selectedBuildings.forEach { building ->
-                        val code: StringBuilder = StringBuilder(building.toString())
-                        val regex = Regex("code_[0-9]*=")
-                        val codeStr = code.delete(0, 17)
-                            .delete(code.indexOf("group"), code.length)
-                            .replace(regex, "")
-                            .split(", ")
-                            .toSet()
-                        val pattern = Pattern.compile("${zone.name}[А-Я]")
-                        if (codeStr.any{ e -> pattern.matcher(e).matches() })  {
-                            var style = STYLE_DEFAULT
-                            var name = zone.name
-                            if (codeStr.contains("${name}П")) {
-                                style = STYLE_GREEN
-                                name += "П"
-                            } else if (codeStr.contains("${name}С")) {
-                                style = STYLE_ORANGE
-                                name += "С"
-                            } else if (codeStr.contains("${name}Д")) {
-                                style = STYLE_BLUE
-                                name += "Д"
-                            }
-
-                            zone.polygons.forEach { polygon ->
-                                builder = LatLngBounds.builder()
-                                polygon.points.forEach { point ->
-                                    builder.include(point)
-                                }
-                                bounds = builder.build()
-                                val mo =
-                                    addMarker(bounds!!.center, i++.toString(), style, building.group, name)
-                                googleMap.addMarker(mo)
-                                val po = PolygonOptions()
-                                    .addAll(polygon.points)
-                                    .strokeColor(polygon.strokeColor)
-                                    .strokeWidth(1f)
-                                    .fillColor(polygon.fillColor)
-                                googleMap.addPolygon(po)
-                                zonesList.add(mo to po)
-                            }
-                            zone.circles.forEach { circle ->
-                                val co = CircleOptions()
-                                    .center(circle.center)
-                                    .radius(circle.radius)
-                                    .strokeColor(circle.strokeColor)
-                                    .strokeWidth(1f)
-                                    .fillColor(circle.fillColor)
-                                googleMap.addCircle(co)
-                                val mo =
-                                    addMarker(circle.center, i++.toString(), style, building.group, zone.name)
-                                googleMap.addMarker(mo)
-                                zonesList.add(mo to co)
-                            }
-                        }
-                    }
-                }
-
-                markerShown = 0
-                showZoneWithMarker(zonesList[markerShown].first)
-
-                if (zonesList.size > 1)
-                    binding.btnForward.isEnabled = true
-            }
-        }
-    }
-
     private fun addMarker(
         latLng: LatLng,
         tag: String,
@@ -143,12 +59,13 @@ class ZonesMapFragment : Fragment() {
         val iconGen = IconGenerator(context)
         iconGen.setStyle(style)
 
-        return MarkerOptions()
-            .icon(BitmapDescriptorFactory.fromBitmap(iconGen.makeIcon(tag)))
-            .title(name)
-            .snippet(group)
-            .position(latLng)
-            .anchor(iconGen.anchorU, iconGen.anchorV)
+        return MarkerOptions().apply {
+            icon(BitmapDescriptorFactory.fromBitmap(iconGen.makeIcon(tag)))
+            title(name)
+            snippet(group)
+            position(latLng)
+            anchor(iconGen.anchorU, iconGen.anchorV)
+        }
     }
 
     private fun showZoneWithMarker(markerOptions: MarkerOptions) {
@@ -262,8 +179,101 @@ class ZonesMapFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        val mapFragment = childFragmentManager.findFragmentById(R.id.map) as SupportMapFragment?
-        mapFragment?.getMapAsync(callback)
+        lifecycleScope.launchWhenCreated {
+            val mapFragment =
+                childFragmentManager.findFragmentById(R.id.map) as SupportMapFragment?
+            val map = mapFragment?.awaitMap()
+            if (map != null) {
+                googleMap = map
+                val city = sharedViewModel.mCity.value
+                if (city != null) {
+                    val coordinates = city.coordinates.split(",")
+                    moveCameraToBounds(
+                        LatLngBounds
+                            .builder()
+                            .include(
+                                LatLng(
+                                    coordinates[0].toDouble(),
+                                    coordinates[1].toDouble()
+                                )
+                            )
+                            .build()
+                    )
+                }
+            }
+
+            val selectedBuildings = sharedViewModel.mSelectedBuildingsList.value
+            if (selectedBuildings != null) {
+                var i = 1
+                var builder: LatLngBounds.Builder
+                var bounds: LatLngBounds?
+                sharedViewModel.mCityZones.value?.forEach { zone ->
+                    selectedBuildings.forEach { building ->
+                        val code: StringBuilder = StringBuilder(building.toString())
+                        val regex = Regex("code_[0-9]*=")
+                        val codeStr = code.delete(0, 17)
+                            .delete(code.indexOf("group"), code.length)
+                            .replace(regex, "")
+                            .split(", ")
+                            .toSet()
+                        val pattern = Pattern.compile("${zone.name}[А-Я]")
+                        if (codeStr.any{ e -> pattern.matcher(e).matches() })  {
+                            var style = STYLE_DEFAULT
+                            var name = zone.name
+                            if (codeStr.contains("${name}П")) {
+                                style = STYLE_GREEN
+                                name += "П"
+                            } else if (codeStr.contains("${name}С")) {
+                                style = STYLE_ORANGE
+                                name += "С"
+                            } else if (codeStr.contains("${name}Д")) {
+                                style = STYLE_BLUE
+                                name += "Д"
+                            }
+
+                            zone.polygons.forEach { polygon ->
+                                builder = LatLngBounds.builder()
+                                polygon.points.forEach { point ->
+                                    builder.include(point)
+                                }
+                                bounds = builder.build()
+                                val mo =
+                                    addMarker(bounds!!.center, i++.toString(), style, building.group, name)
+                                googleMap.addMarker(mo)
+                                val po = PolygonOptions().apply {
+                                    addAll(polygon.points)
+                                    strokeColor(polygon.strokeColor)
+                                    strokeWidth(1f)
+                                    fillColor(polygon.fillColor)
+                                }
+                                googleMap.addPolygon(po)
+                                zonesList.add(mo to po)
+                            }
+                            zone.circles.forEach { circle ->
+                                val co = CircleOptions().apply {
+                                    center(circle.center)
+                                    radius(circle.radius)
+                                    strokeColor(circle.strokeColor)
+                                    strokeWidth(1f)
+                                    fillColor(circle.fillColor)
+                                }
+                                googleMap.addCircle(co)
+                                val mo =
+                                    addMarker(circle.center, i++.toString(), style, building.group, zone.name)
+                                googleMap.addMarker(mo)
+                                zonesList.add(mo to co)
+                            }
+                        }
+                    }
+                }
+
+                markerShown = 0
+                showZoneWithMarker(zonesList[markerShown].first)
+
+                if (zonesList.size > 1)
+                    binding.btnForward.isEnabled = true
+            }
+        }
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
