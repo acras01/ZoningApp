@@ -92,9 +92,6 @@ class ChooseBuildingFragment : Fragment(), AdapterView.OnItemSelectedListener {
                 findNavController().navigate(R.id.action_chooseBuildingFragment_to_chooseActionFragment)
             }
         })
-
-        (activity as MainActivity).askForLocationPermission()
-        (activity as MainActivity).askForStoragePermission()
     }
 
     override fun onItemSelected(p0: AdapterView<*>?, p1: View?, p2: Int, p3: Long) {

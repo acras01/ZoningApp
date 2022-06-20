@@ -93,22 +93,7 @@
             android:id="@+id/action_zoneExportFragment_to_selectFragment"
             app:destination="@id/selectFragment" />
         <action
-            android:id="@+id/action_zoneExportFragment_to_exportSettingsFragment"
-            app:destination="@id/exportSettingsFragment" />
-        <action
             android:id="@+id/action_zoneExportFragment_to_HTMLPrintFragment"
-            app:destination="@id/HTMLPrintFragment" />
-    </fragment>
-    <fragment
-        android:id="@+id/exportSettingsFragment"
-        android:name="ua.od.acros.zoningapp.ui.main.ExportSettingsFragment"
-        android:label="fragment_export_settings"
-        tools:layout="@layout/fragment_export_settings" >
-        <action
-            android:id="@+id/action_exportSettingsFragment_to_zoneExportFragment"
-            app:destination="@id/zoneExportFragment" />
-        <action
-            android:id="@+id/action_exportSettingsFragment_to_HTMLPrintFragment"
             app:destination="@id/HTMLPrintFragment" />
     </fragment>
     <fragment
@@ -116,9 +101,6 @@
         android:name="ua.od.acros.zoningapp.ui.main.HTMLPrintFragment"
         android:label="fragment_html_print"
         tools:layout="@layout/fragment_html_print" >
-        <action
-            android:id="@+id/action_HTMLPrintFragment_to_exportSettingsFragment"
-            app:destination="@id/exportSettingsFragment" />
         <action
             android:id="@+id/action_HTMLPrintFragment_to_zoneExportFragment"
             app:destination="@id/zoneExportFragment" />

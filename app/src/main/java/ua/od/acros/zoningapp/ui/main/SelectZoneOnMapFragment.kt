@@ -99,7 +99,6 @@ class SelectZoneOnMapFragment : Fragment() {
             googleMap.snapshot { bitmap ->
                 sharedViewModel.setBitmap(bitmap)
             }
-            (activity as MainActivity).askForStoragePermission()
             findNavController().navigate(R.id.action_selectZoneOnMapFragment_to_zoneExportFragment)
         }
 
@@ -207,9 +206,6 @@ class SelectZoneOnMapFragment : Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
-        (activity as MainActivity).askForLocationPermission()
-
         activity?.onBackPressedDispatcher?.addCallback(this, object : OnBackPressedCallback(true) {
             override fun handleOnBackPressed() {
                 findNavController().navigate(R.id.action_selectZoneOnMapFragment_to_chooseActionFragment)

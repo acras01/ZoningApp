@@ -39,4 +39,11 @@
     <string name="preferred_one">Preferred</string>
     <string name="accompanying_one">Accompanying</string>
     <string name="acceptable_one">Acceptable</string>
+    <string name="give_permissions">\tE-City needs some permissions to be fully functional.\n
+        \tIt needs access to your geolocation to be able to find you on Google Maps.\n
+        \tThank you for understanding!</string>
+    <string name="do_not_ask">Do not ask in the future</string>
+    <string name="give_permissions_title">We need some permissions</string>
+    <string name="not_functional">E-City won\'t be fully functional</string>
+    <string name="not_functional_check">E-City won\'t be fully functional. Any time you want to change it, please, go to System Settings and grant permissions</string>
 </resources>

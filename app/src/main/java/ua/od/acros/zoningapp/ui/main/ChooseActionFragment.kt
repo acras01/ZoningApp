@@ -59,6 +59,5 @@ class ChooseActionFragment : Fragment() {
                 findNavController().navigate(R.id.action_chooseActionFragment_to_selectFragment)
             }
         })
-        (activity as MainActivity).askForLocationPermission()
     }
 }

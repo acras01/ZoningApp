@@ -34,8 +34,6 @@ class ZoneExportFragment : Fragment() {
     ): View {
         _binding = FragmentZoneExportBinding.inflate(inflater, container, false)
 
-        binding.btnExportResults.isEnabled = false
-
         this.context?.let { MobileAds.initialize(it) }
         val adRequest = AdRequest.Builder().build()
         binding.avZoneExportFragmentBanner.loadAd(adRequest)
@@ -47,13 +45,6 @@ class ZoneExportFragment : Fragment() {
                 binding.tvZoneDesc4.text = zone.second!![1]
                 binding.tvZoneDesc6.text = zone.second!![2]
             }
-        }
-
-        sharedViewModel.mStoragePerm.observe(viewLifecycleOwner) {
-            if (it == true)
-                binding.btnExportResults.isEnabled = true
-            else
-                Toast.makeText(context, R.string.give_storage_permission, Toast.LENGTH_LONG).show()
         }
 
         binding.btnNewSearch.clicks().subscribe {
@@ -80,7 +71,5 @@ class ZoneExportFragment : Fragment() {
                 findNavController().navigate(R.id.action_zoneExportFragment_to_selectZoneOnMapFragment)
             }
         })
-
-        (activity as MainActivity).askForStoragePermission()
     }
 }

@@ -21,7 +21,6 @@ import com.google.maps.android.ktx.awaitMap
 import com.google.maps.android.ui.IconGenerator
 import com.google.maps.android.ui.IconGenerator.*
 import com.jakewharton.rxbinding4.view.clicks
-import ua.od.acros.zoningapp.misc.data.SavePNGRepositoryImpl
 import ua.od.acros.zoningapp.misc.utils.screenValue
 import ua.od.acros.zoningapp.vm.MainViewModel
 import ua.od.acros.zoningapp.R
@@ -87,8 +86,6 @@ class ZonesMapFragment : Fragment() {
     ): View {
         _binding = FragmentZonesMapBinding.inflate(inflater, container, false)
 
-        binding.btnExportResults.isEnabled = false
-
         binding.btnNewSearch.clicks().subscribe {
             findNavController().navigate(R.id.action_zonesMapsFragment_to_selectFragment)
         }
@@ -137,22 +134,6 @@ class ZonesMapFragment : Fragment() {
                     )
                 }
             }
-        }
-
-        sharedViewModel.mStoragePerm.observe(viewLifecycleOwner) {
-            if (it)
-                binding.btnExportResults.isEnabled = true
-            else
-                Toast.makeText(context, R.string.give_storage_permission, Toast.LENGTH_LONG).show()
-        }
-
-        sharedViewModel.mSavePNG.observe(viewLifecycleOwner) { result ->
-            var text = ""
-            when (result) {
-                SavePNGRepositoryImpl.OK -> text = resources.getString(R.string.saved)
-                SavePNGRepositoryImpl.ERR -> text = resources.getString(R.string.not_saved)
-            }
-            Toast.makeText(context, text, Toast.LENGTH_LONG).show()
         }
 
         this.context?.let { MobileAds.initialize(it) }
@@ -285,8 +266,6 @@ class ZonesMapFragment : Fragment() {
                 findNavController().navigate(R.id.action_zonesMapsFragment_to_chooseBuildingFragment)
             }
         })
-        (activity as MainActivity).askForLocationPermission()
-        (activity as MainActivity).askForStoragePermission()
     }
 
     private fun moveCameraToBounds(bounds: LatLngBounds) {

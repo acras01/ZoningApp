@@ -6,11 +6,9 @@ import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
 import ua.od.acros.zoningapp.misc.data.JsonRepositoryImpl
 import ua.od.acros.zoningapp.misc.data.LocationRepositoryImpl
-import ua.od.acros.zoningapp.misc.data.SavePNGRepositoryImpl
 import ua.od.acros.zoningapp.misc.data.ZonesRepositoryImpl
 import ua.od.acros.zoningapp.misc.repository.JsonRepository
 import ua.od.acros.zoningapp.misc.repository.LocationRepository
-import ua.od.acros.zoningapp.misc.repository.SavePNGRepository
 import ua.od.acros.zoningapp.misc.repository.ZonesRepository
 
 @Module
@@ -24,7 +22,4 @@ abstract class AppModule {
 
     @Binds
     abstract fun bindLocationRepository(locationRepositoryImpl: LocationRepositoryImpl): LocationRepository
-
-    @Binds
-    abstract fun bindSavePNGRepository(savePNGRepositoryImpl: SavePNGRepositoryImpl): SavePNGRepository
 }

@@ -1,9 +1,6 @@
 package ua.od.acros.zoningapp.vm
 
 import android.graphics.Bitmap
-import android.net.Uri
-import android.os.Environment
-import android.provider.DocumentsContract
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -26,21 +23,8 @@ class MainViewModel @Inject constructor(
     private val getZonesUseCase: GetZonesUseCase,
     private val getJsonUseCase: GetJsonUseCase,
     private val getCurrentLocationUseCase: GetCurrentLocationUseCase,
-    private val getLocationFromAddressUseCase: GetLocationFromAddressUseCase,
-    private val getSavePNGUseCase: GetSavePNGUseCase
+    private val getLocationFromAddressUseCase: GetLocationFromAddressUseCase
 ) : ViewModel() {
-
-    private val directorySelected: MutableLiveData<String> = MutableLiveData()
-    val mDirectorySelected: LiveData<String> get() = directorySelected
-    fun setDirectory(uri: Uri) {
-        val docId = DocumentsContract.getTreeDocumentId(uri)
-        val split = docId.split(":")
-        val type = split[0]
-        if ("primary".equals(type, ignoreCase = true)) {
-            directorySelected.value =
-                "${Environment.getExternalStorageDirectory()}/${split[1]}"
-        }
-    }
 
     private val selectedZone: MutableLiveData<Pair<String?, Array<String>?>> = MutableLiveData()
     val mSelectedZone: LiveData<Pair<String?, Array<String>?>> get() = selectedZone
@@ -75,12 +59,6 @@ class MainViewModel @Inject constructor(
         locationPerm.value = permission
     }
 
-    private val storagePerm: MutableLiveData<Boolean> = MutableLiveData(false)
-    val mStoragePerm: LiveData<Boolean> get() = storagePerm
-    fun setStoragePermission(permission: Boolean) {
-        storagePerm.value = permission
-    }
-
     private val location: MutableLiveData<LatLng?> = MutableLiveData()
     val mLocation: LiveData<LatLng?> get() = location
 
@@ -107,7 +85,7 @@ class MainViewModel @Inject constructor(
         jobSVG = viewModelScope.launch {
             val fileName = city.city
             val zones = getZonesUseCase.execute(fileName)
-            cityZones.postValue(zones)
+            cityZones.value = zones
         }
     }
 
@@ -115,7 +93,7 @@ class MainViewModel @Inject constructor(
         jobCities = viewModelScope.launch {
             val cityListType: Type = object : TypeToken<MutableList<City>>() {}.type
             val list = getJsonUseCase.execute<City>("cities.json",cityListType)
-            cityList.postValue(list)
+            cityList.value = list
         }
     }
 
@@ -124,28 +102,21 @@ class MainViewModel @Inject constructor(
         jobBuildings = viewModelScope.launch {
             val buildingListType: Type = object : TypeToken<MutableList<Building>>() {}.type
             val bList = getJsonUseCase.execute<Building>("buildings_$name.json",buildingListType)
-            buildingList.postValue(bList)
+            buildingList.value = bList
         }
     }
 
     fun requestCurrentLocation() {
         jobLocation = viewModelScope.launch {
             val result = getCurrentLocationUseCase.execute()
-            location.postValue(result)
+            location.value = result
         }
     }
 
     fun getLocationFromAddress(address: String) {
         jobLocation = viewModelScope.launch {
             val result = getLocationFromAddressUseCase.execute(address)
-            location.postValue(result)
-        }
-    }
-
-    fun savePNG(bitmap: Bitmap, folderName: String, fileName: String) {
-        jobSavePNG = viewModelScope.launch {
-            val result = getSavePNGUseCase.execute(bitmap, folderName, fileName)
-            savePNG.postValue(result)
+            location.value = result
         }
     }
 

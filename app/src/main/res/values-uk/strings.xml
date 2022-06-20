@@ -39,4 +39,11 @@
     <string name="preferred_one">Переважний</string>
     <string name="accompanying_one">Супутній</string>
     <string name="acceptable_one">Допустимий</string>
+    <string name="give_permissions">\tE-City потребує деякі дозволи для того, щоб працювати повноцінно.\n
+        \tДля того, аби знайти Вас на Google Maps, додатку потрібен доступ до місцезнаходження.\n
+        \tДякуємо за розуміння!</string>
+    <string name="do_not_ask">Не питати в наступному</string>
+    <string name="give_permissions_title">Потрібні дозволи</string>
+    <string name="not_functional">E-City не буде повністю функціональним</string>
+    <string name="not_functional_check">E-City не буде повністю функціональним. Якщо ви бажаєте це змінити, будь-ласка, надайте дозволи в Налаштуваннях системи</string>
 </resources>
