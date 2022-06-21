@@ -56,22 +56,18 @@
         android:layout_weight=".4"
         android:orientation="vertical">
 
-        <EditText
-            android:id="@+id/et_enterAddress"
+        <Button
+            android:id="@+id/btn_enterAddress"
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_gravity="start|center_vertical"
+            android:layout_height="64dp"
+            android:layout_gravity="center_vertical"
             android:layout_marginStart="8dp"
             android:layout_marginTop="32dp"
             android:layout_marginEnd="8dp"
-            android:gravity="start|center_vertical"
-            android:hint="@string/enter_address"
-            android:importantForAutofill="no"
-            android:inputType="textPostalAddress"
-            android:minHeight="48dp"
-            android:textColor="@color/button_text_color"
-            android:textColorHint="@color/button_text_color"
-            android:textSize="20sp"
+            android:gravity="center_horizontal|center_vertical"
+            android:backgroundTint="@color/button_state_colors"
+            android:text="@string/enter_address_button"
+            android:textColor="@color/button_text_state_colors"
             app:layout_constraintBottom_toTopOf="@+id/btn_currentLocation"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -91,7 +87,7 @@
             android:textColor="@color/button_text_state_colors"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/et_enterAddress" />
+            app:layout_constraintTop_toBottomOf="@+id/btn_enterAddress" />
 
         <Button
             android:id="@+id/btn_showSelectedZone"

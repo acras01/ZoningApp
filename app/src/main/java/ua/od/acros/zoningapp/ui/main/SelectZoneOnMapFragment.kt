@@ -60,13 +60,13 @@ class SelectZoneOnMapFragment : Fragment() {
 
         _binding = FragmentSelectZoneOnMapBinding.inflate(inflater, container, false)
 
-        binding.etEnterAddress.isEnabled = false
+        binding.btnEnterAddress.isEnabled = false
         binding.btnCurrentLocation.isEnabled = false
         binding.btnShowSelectedZone.isEnabled = false
 
         sharedViewModel.mCityZones.observe(viewLifecycleOwner) { zones ->
             this.zones = zones
-            binding.etEnterAddress.isEnabled = true
+            binding.btnEnterAddress.isEnabled = true
             binding.btnCurrentLocation.isEnabled = sharedViewModel.mLocationPerm.value == true
         }
 
@@ -74,19 +74,15 @@ class SelectZoneOnMapFragment : Fragment() {
             this.buildings = buildings
         }
 
-        binding.etEnterAddress.setOnEditorActionListener(TextView.OnEditorActionListener { view, actionId, _ ->
-            if (actionId == EditorInfo.IME_ACTION_DONE) {
-                val address = "${sharedViewModel.mCity.value?.city} ${view.text}"
-                sharedViewModel.getLocationFromAddress(address)
-                //return@OnEditorActionListener true
-            }
-            return@OnEditorActionListener false
-        })
-
         sharedViewModel.mLocation.observe(viewLifecycleOwner) { location ->
             if (::googleMap.isInitialized && location != null) {
                 addMarker(location)
             }
+        }
+
+        binding.btnEnterAddress.clicks().subscribe {
+            val dialog = EnterAddressDialogFragment()
+            activity?.let { a -> dialog.show(a.supportFragmentManager, "EnterAddressDialogFragment") }
         }
 
         binding.btnCurrentLocation.clicks().subscribe {

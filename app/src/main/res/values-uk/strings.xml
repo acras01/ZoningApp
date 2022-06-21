@@ -46,4 +46,6 @@
     <string name="give_permissions_title">Потрібні дозволи</string>
     <string name="not_functional">E-City не буде повністю функціональним</string>
     <string name="not_functional_check">E-City не буде повністю функціональним. Якщо ви бажаєте це змінити, будь-ласка, надайте дозволи в Налаштуваннях системи</string>
+    <string name="enter_address_title">Введіть адресу</string>
+    <string name="enter_address_button">Вказати адресу</string>
 </resources>

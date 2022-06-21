@@ -1,7 +1,6 @@
 package ua.od.acros.zoningapp.ui.main
 
 import android.app.Dialog
-import android.content.DialogInterface
 import android.os.Bundle
 import android.widget.CheckBox
 import android.widget.Toast
@@ -14,9 +13,9 @@ class AskPermissionDialogFragment : DialogFragment() {
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         return activity?.let {
             val builder = AlertDialog.Builder(it)
-            val inflater = requireActivity().layoutInflater;
-            val dialogView = inflater.inflate(R.layout.ask_permission_dialog, null)
-            val cb = dialogView.findViewById<CheckBox>(R.id.checkBox)
+            val inflater = requireActivity().layoutInflater
+            val dialogView = inflater.inflate(R.layout.fragment_ask_permission_dialog, null)
+            val cb = dialogView.findViewById<CheckBox>(R.id.cb_doNotAsk)
             val prefs = PreferenceManager.getDefaultSharedPreferences(it)
             val editor = prefs.edit()
             builder.apply {
