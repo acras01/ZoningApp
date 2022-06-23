@@ -4,10 +4,8 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.google.android.gms.ads.AdRequest
@@ -22,10 +20,10 @@ import com.google.maps.android.ui.IconGenerator
 import com.google.maps.android.ui.IconGenerator.*
 import com.jakewharton.rxbinding4.view.clicks
 import ua.od.acros.zoningapp.misc.utils.screenValue
-import ua.od.acros.zoningapp.vm.MainViewModel
 import ua.od.acros.zoningapp.R
 import ua.od.acros.zoningapp.databinding.FragmentZonesMapBinding
 import ua.od.acros.zoningapp.misc.utils.Building
+import ua.od.acros.zoningapp.vm.MainViewModel
 import java.util.regex.Pattern
 import kotlin.collections.ArrayList
 
@@ -37,15 +35,11 @@ class ZonesMapFragment : Fragment() {
 
     private val binding get() = _binding!!
 
-    private val sharedViewModel: MainViewModel by activityViewModels()
+    private lateinit var sharedViewModel: MainViewModel
 
     private val zonesList: ArrayList<Pair<MarkerOptions, AbstractSafeParcelable>> = arrayListOf()
 
     private var markerShown = -1
-
-    companion object {
-        const val FRAGMENT_ID = 1
-    }
 
     private fun addMarker(
         latLng: LatLng,
@@ -99,6 +93,8 @@ class ZonesMapFragment : Fragment() {
             showNextMarker()
         }
 
+        sharedViewModel = (activity as MainActivity).getViewModel()
+
         binding.btnExportResults.clicks().subscribe {
             val list = sharedViewModel.mSelectedBuildingsList.value
                 ?.map { building ->  mapBuilding(building) }
@@ -114,20 +110,9 @@ class ZonesMapFragment : Fragment() {
             }
             googleMap.snapshot { bitmap ->
                 if (bitmap != null) {
-//                        val fileName: String =
-//                            "${zonesList[markerShown].first.title}_" + SimpleDateFormat("yyyyMMddHHmm").format(
-//                                Date()
-//                            )
-//                        context?.let { it ->
-//                            sharedViewModel.savePNG(
-//                                bitmap,
-//                                it.getString(R.string.app_name),
-//                                fileName
-//                            )
-//                        }
                     sharedViewModel.setBitmap(bitmap)
                     val args = Bundle()
-                    args.putInt("id", FRAGMENT_ID)
+                    args.putInt("fragment_id", HTMLPrintFragment.ZONE_FOR_PURPOSE)
                     findNavController().navigate(
                         R.id.action_zonesMapFragment_to_HTMLPrintFragment,
                         args

@@ -62,9 +62,6 @@ class MainViewModel @Inject constructor(
     private val location: MutableLiveData<LatLng?> = MutableLiveData()
     val mLocation: LiveData<LatLng?> get() = location
 
-    private val savePNG: MutableLiveData<Int> = MutableLiveData()
-    val mSavePNG: LiveData<Int> get() = savePNG
-
     private val mapBitmap: MutableLiveData<Bitmap> = MutableLiveData()
     val mMapBitmap: LiveData<Bitmap> get() = mapBitmap
     fun setBitmap(bitmap: Bitmap?) {
@@ -75,7 +72,6 @@ class MainViewModel @Inject constructor(
     private var jobCities: Job? = null
     private var jobBuildings: Job? = null
     private var jobLocation: Job? = null
-    private var jobSavePNG: Job? = null
 
     init {
         parseCities()
@@ -126,7 +122,6 @@ class MainViewModel @Inject constructor(
         jobCities?.cancel()
         jobBuildings?.cancel()
         jobLocation?.cancel()
-        jobSavePNG?.cancel()
     }
 
     fun getInfoForZone(title: String?): Array<String>? {

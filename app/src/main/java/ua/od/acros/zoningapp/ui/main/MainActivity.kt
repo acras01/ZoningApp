@@ -60,4 +60,8 @@ class MainActivity : AppCompatActivity() {
         )
         locationResultLauncher.launch(appPerms)
     }
+
+    fun getViewModel(): MainViewModel {
+        return sharedViewModel
+    }
 }

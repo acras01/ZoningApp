@@ -10,24 +10,23 @@ import android.widget.AdapterView
 import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
-import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import com.google.android.gms.ads.AdRequest
 import com.google.android.gms.ads.MobileAds
 import com.jakewharton.rxbinding4.view.clicks
 import ua.od.acros.zoningapp.misc.utils.Building
 import ua.od.acros.zoningapp.misc.utils.CustomAdapter
-import ua.od.acros.zoningapp.vm.MainViewModel
 import ua.od.acros.zoningapp.R
 import ua.od.acros.zoningapp.databinding.FragmentChooseBuildingBinding
+import ua.od.acros.zoningapp.vm.MainViewModel
 
 class ChooseBuildingFragment : Fragment(), AdapterView.OnItemSelectedListener {
+
+    private lateinit var sharedViewModel: MainViewModel
 
     private var _binding: FragmentChooseBuildingBinding? = null
 
     private val binding get() = _binding!!
-
-    private val sharedViewModel: MainViewModel by activityViewModels()
 
     private var typeSelectionMade = false
     private var groupSelectionMade = false
@@ -51,6 +50,8 @@ class ChooseBuildingFragment : Fragment(), AdapterView.OnItemSelectedListener {
         this.context?.let { MobileAds.initialize(it) }
         val adRequest = AdRequest.Builder().build()
         binding.avSelectBuildingFragmentBanner.loadAd(adRequest)
+
+        sharedViewModel = (activity as MainActivity).getViewModel()
 
         sharedViewModel.mBuildingList.observe(viewLifecycleOwner) { buildingList ->
             if (buildingList != null) {
@@ -77,7 +78,7 @@ class ChooseBuildingFragment : Fragment(), AdapterView.OnItemSelectedListener {
             }
         }
 
-        binding.btnFindZone.clicks().subscribe() {
+        binding.btnFindZone.clicks().subscribe {
             sharedViewModel.setSelectedBuildingsList(groupSelected, typeSelected)
             findNavController().navigate(R.id.action_chooseBuildingFragment_to_zonesMapsFragment)
         }

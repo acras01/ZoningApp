@@ -8,22 +8,18 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
-import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import com.google.android.gms.ads.AdRequest
 import com.google.android.gms.ads.MobileAds
 import com.jakewharton.rxbinding4.view.clicks
 import ua.od.acros.zoningapp.R
 import ua.od.acros.zoningapp.databinding.FragmentChooseActionBinding
-import ua.od.acros.zoningapp.vm.MainViewModel
 
 class ChooseActionFragment : Fragment() {
 
     private var _binding: FragmentChooseActionBinding? = null
 
     private val binding get() = _binding!!
-
-    private val sharedViewModel: MainViewModel by activityViewModels()
 
     @SuppressLint("MissingPermission")
     override fun onCreateView(
@@ -35,6 +31,8 @@ class ChooseActionFragment : Fragment() {
         this.context?.let { MobileAds.initialize(it) }
         val adRequest = AdRequest.Builder().build()
         binding.avActionFragmentBanner.loadAd(adRequest)
+
+        val sharedViewModel = (activity as MainActivity).getViewModel()
 
         val onCheckPlot: () -> Unit = {
             if (sharedViewModel.mLocationPerm.value == true) {

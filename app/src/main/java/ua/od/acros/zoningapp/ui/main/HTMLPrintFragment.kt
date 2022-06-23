@@ -14,13 +14,11 @@ import android.webkit.WebView
 import android.webkit.WebViewClient
 import androidx.activity.OnBackPressedCallback
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import ua.od.acros.zoningapp.R
 import ua.od.acros.zoningapp.databinding.FragmentHtmlPrintBinding
 import ua.od.acros.zoningapp.vm.MainViewModel
 import java.io.ByteArrayOutputStream
-
 
 class HTMLPrintFragment : Fragment() {
 
@@ -28,20 +26,22 @@ class HTMLPrintFragment : Fragment() {
 
     private val binding get() = _binding!!
 
-    private val sharedViewModel: MainViewModel by activityViewModels()
+    private lateinit var sharedViewModel: MainViewModel
 
     private var myWebView: WebView? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        val fragmentId = arguments?.getInt("id")!!
+        sharedViewModel = (activity as MainActivity).getViewModel()
+
+        val fragmentId = arguments?.getInt("fragment_id")!!
 
         activity?.onBackPressedDispatcher?.addCallback(this, object : OnBackPressedCallback(true) {
             override fun handleOnBackPressed() {
                 when (fragmentId) {
-                    ZoneExportFragment.FRAGMENT_ID -> findNavController().navigate(R.id.action_HTMLPrintFragment_to_zoneExportFragment)
-                    ZonesMapFragment.FRAGMENT_ID -> findNavController().navigate(R.id.action_HTMLPrintFragment_to_zonesMapFragment)
+                    ZONE_FOR_PURPOSE -> findNavController().navigate(R.id.action_HTMLPrintFragment_to_zonesMapFragment)
+                    ZONE_ON_MAP -> findNavController().navigate(R.id.action_HTMLPrintFragment_to_zoneExportFragment)
                 }
             }
         })
@@ -77,8 +77,8 @@ class HTMLPrintFragment : Fragment() {
 
         var html = ""
         when (fragmentId) {
-            ZoneExportFragment.FRAGMENT_ID -> html = prepareHtmlForSelectedZone()
-            ZonesMapFragment.FRAGMENT_ID -> html = prepareHtmlForSelectedPurposes()
+            ZONE_ON_MAP -> html = prepareHtmlForSelectedZone()
+            ZONE_FOR_PURPOSE -> html = prepareHtmlForSelectedPurposes()
         }
 
         webView?.loadDataWithBaseURL(
@@ -92,11 +92,11 @@ class HTMLPrintFragment : Fragment() {
         var html = "<h1>Зона {ZONE_PLACEHOLDER}</h1>\n" +
                 "<p><img src=\"{IMAGE_PLACEHOLDER}\"  style=\"height:320px; width:240px\" /></p>\n" +
                 "<h2><strong>Вид використання території (земельної ділянки)</strong></h2>\n" +
-                FIRST +
+                FIRST_GROUP +
                 "<h3>{ZONE1_PLACEHOLDER}</h3>\n" +
-                SECOND +
+                SECOND_GROUP +
                 "<h3>{ZONE2_PLACEHOLDER}</h3>\n" +
-                THIRD +
+                THIRD_GROUP +
                 "<h3>{ZONE3_PLACEHOLDER}</h3>\n"
 
         var zoneDesc = sharedViewModel.mSelectedZone.value!!.first
@@ -109,15 +109,8 @@ class HTMLPrintFragment : Fragment() {
         html = html.replace("{ZONE3_PLACEHOLDER}", zoneDesc)
         html = html.replace("\n", "<br>")
 
-        // Convert bitmap to Base64 encoded image for web
         val bitmap: Bitmap = sharedViewModel.mMapBitmap.value!!
-        val byteArrayOutputStream = ByteArrayOutputStream()
-        bitmap.compress(Bitmap.CompressFormat.PNG, 100, byteArrayOutputStream)
-        val byteArray: ByteArray = byteArrayOutputStream.toByteArray()
-        val imageBase64: String = Base64.encodeToString(byteArray, Base64.DEFAULT)
-        val image = "data:image/png;base64,$imageBase64"
-        // Use image for the img src parameter in your html and load to webview
-        html = html.replace("{IMAGE_PLACEHOLDER}", image)
+        html = html.replace("{IMAGE_PLACEHOLDER}", prepareImage(bitmap))
 
         return html
     }
@@ -137,15 +130,15 @@ class HTMLPrintFragment : Fragment() {
         when (zoneDesc?.last()) {
             'П' -> {
                 type = getString(R.string.preferred_one)
-                legend = FIRST
+                legend = FIRST_GROUP
             }
             'С' -> {
                 type = getString(R.string.accompanying_one)
-                legend = SECOND
+                legend = SECOND_GROUP
             }
             'Д' -> {
                 type = getString(R.string.acceptable_one)
-                legend = THIRD
+                legend = THIRD_GROUP
             }
         }
         html = html.replace("{ZONE_PLACEHOLDER}", zoneDesc!!.dropLast(1))
@@ -155,15 +148,8 @@ class HTMLPrintFragment : Fragment() {
         html = html.replace("{LEGEND_PLACEHOLDER}", legend)
         html = html.replace("\n", "<br>")
 
-        // Convert bitmap to Base64 encoded image for web
         val bitmap: Bitmap = sharedViewModel.mMapBitmap.value!!
-        val byteArrayOutputStream = ByteArrayOutputStream()
-        bitmap.compress(Bitmap.CompressFormat.PNG, 100, byteArrayOutputStream)
-        val byteArray: ByteArray = byteArrayOutputStream.toByteArray()
-        val imageBase64: String = Base64.encodeToString(byteArray, Base64.DEFAULT)
-        val image = "data:image/png;base64,$imageBase64"
-        // Use image for the img src parameter in your html and load to webview
-        html = html.replace("{IMAGE_PLACEHOLDER}", image)
+        html = html.replace("{IMAGE_PLACEHOLDER}", prepareImage(bitmap))
 
         return html
     }
@@ -179,16 +165,28 @@ class HTMLPrintFragment : Fragment() {
         )
     }
 
-    companion object Groups {
-        const val FIRST =
+    private fun prepareImage(bitmap: Bitmap): String {
+        val byteArrayOutputStream = ByteArrayOutputStream()
+        bitmap.compress(Bitmap.CompressFormat.PNG, 100, byteArrayOutputStream)
+        val byteArray: ByteArray = byteArrayOutputStream.toByteArray()
+        val imageBase64: String = Base64.encodeToString(byteArray, Base64.DEFAULT)
+        return "data:image/png;base64,$imageBase64"
+    }
+
+    companion object Constants {
+
+        const val ZONE_ON_MAP = 1
+        const val ZONE_FOR_PURPOSE = 2
+
+        const val FIRST_GROUP =
                 "<h3><span style=\"background-color:#99cc00\">Переважний</span></h3>\n" +
                 "<p>Переважний вид використання території (земельної ділянки) &ndash; вид використання, який відповідає переліку дозволених видів для даної територіальної зони і не потребує спеціального погодження</p>\n"
 
-        const val SECOND =
+        const val SECOND_GROUP =
                 "<h3><span style=\"background-color:#ffbb33\">Супутній</span></h3>\n" +
                 "<p>Супутній вид використання території (земельної ділянки) &ndash; вид використання, який є дозволенним та необхідним для забезпечення функціонування переважного виду використання земельної ділянки, (який не потребує спеціального погодження)</p>\n"
 
-        const val THIRD =
+        const val THIRD_GROUP =
                 "<h3><span style=\"background-color:#33b5e5\">Допустимий</span></h3>\n" +
                 "<p>Допустимий вид використання території (земельної ділянки) &ndash; вид використання, який не відповідає переліку переважних та супутніх видів для даної територіальної зони, але може бути дозволеним за умови спеціального погодження</p>"
 

@@ -22,10 +22,7 @@
         tools:layout="@layout/fragment_city_select" >
         <action
             android:id="@+id/action_selectFragment_to_chooseActionFragment"
-            app:destination="@id/chooseActionFragment"
-            app:launchSingleTop="true"
-            app:popUpTo="@id/nav_graph"
-            app:popUpToInclusive="true" />
+            app:destination="@id/chooseActionFragment" />
     </fragment>
     <fragment
         android:id="@+id/chooseActionFragment"
@@ -37,7 +34,9 @@
             app:destination="@id/selectZoneOnMapFragment" />
         <action
             android:id="@+id/action_chooseActionFragment_to_selectFragment"
-            app:destination="@id/selectFragment" />
+            app:destination="@id/selectFragment"
+            app:popUpTo="@id/selectFragment"
+            app:popUpToInclusive="true" />
         <action
             android:id="@+id/action_chooseActionFragment_to_chooseBuildingFragment"
             app:destination="@id/chooseBuildingFragment" />
@@ -76,7 +75,9 @@
             app:destination="@id/chooseBuildingFragment" />
         <action
             android:id="@+id/action_zonesMapsFragment_to_selectFragment"
-            app:destination="@id/selectFragment" />
+            app:destination="@id/selectFragment"
+            app:popUpTo="@id/selectFragment"
+            app:popUpToInclusive="true" />
         <action
             android:id="@+id/action_zonesMapFragment_to_HTMLPrintFragment"
             app:destination="@id/HTMLPrintFragment" />
@@ -91,7 +92,10 @@
             app:destination="@id/selectZoneOnMapFragment" />
         <action
             android:id="@+id/action_zoneExportFragment_to_selectFragment"
-            app:destination="@id/selectFragment" />
+            app:destination="@id/selectFragment"
+            app:launchSingleTop="false"
+            app:popUpTo="@id/selectFragment"
+            app:popUpToInclusive="true" />
         <action
             android:id="@+id/action_zoneExportFragment_to_HTMLPrintFragment"
             app:destination="@id/HTMLPrintFragment" />

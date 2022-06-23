@@ -6,11 +6,8 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.inputmethod.EditorInfo
-import android.widget.TextView
 import androidx.activity.OnBackPressedCallback
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.google.android.gms.ads.AdRequest
@@ -26,12 +23,14 @@ import dagger.hilt.android.AndroidEntryPoint
 import ua.od.acros.zoningapp.misc.utils.Building
 import ua.od.acros.zoningapp.misc.utils.Zone
 import ua.od.acros.zoningapp.misc.utils.screenValue
-import ua.od.acros.zoningapp.vm.MainViewModel
 import ua.od.acros.zoningapp.R
 import ua.od.acros.zoningapp.databinding.FragmentSelectZoneOnMapBinding
+import ua.od.acros.zoningapp.vm.MainViewModel
 
 @AndroidEntryPoint
 class SelectZoneOnMapFragment : Fragment() {
+
+    private lateinit var sharedViewModel: MainViewModel
 
     private lateinit var googleMap: GoogleMap
 
@@ -40,8 +39,6 @@ class SelectZoneOnMapFragment : Fragment() {
     private var zones: List<Zone>? = null
 
     private var buildings: List<Building>? = null
-
-    private val sharedViewModel: MainViewModel by activityViewModels()
 
     private val onMapClickListener = GoogleMap.OnMapClickListener { latLng ->
         if (zones != null)
@@ -63,6 +60,8 @@ class SelectZoneOnMapFragment : Fragment() {
         binding.btnEnterAddress.isEnabled = false
         binding.btnCurrentLocation.isEnabled = false
         binding.btnShowSelectedZone.isEnabled = false
+
+        sharedViewModel = (activity as MainActivity).getViewModel()
 
         sharedViewModel.mCityZones.observe(viewLifecycleOwner) { zones ->
             this.zones = zones
