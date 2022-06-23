@@ -8,6 +8,7 @@ import android.location.Location
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationRequest
 import com.google.android.gms.location.LocationServices
+import com.google.android.gms.location.Priority
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.tasks.CancellationTokenSource
 import com.google.android.gms.tasks.Continuation
@@ -35,7 +36,7 @@ class LocationRepositoryImpl @Inject constructor(
         var result: LatLng? = null
         suspendCoroutine<LatLng?> { cont ->
             fusedLocationClient?.getCurrentLocation(
-                LocationRequest.PRIORITY_HIGH_ACCURACY,
+                Priority.PRIORITY_HIGH_ACCURACY,
                 cancellationTokenSource.token
             )?.addOnCompleteListener { task: Task<Location> ->
                 if (task.isSuccessful) {
