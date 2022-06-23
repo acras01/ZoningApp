@@ -54,7 +54,7 @@ class ChooseActionFragment : Fragment() {
         super.onCreate(savedInstanceState)
         activity?.onBackPressedDispatcher?.addCallback(this, object : OnBackPressedCallback(true) {
             override fun handleOnBackPressed() {
-                findNavController().navigate(R.id.action_chooseActionFragment_to_selectFragment)
+                findNavController().navigate(R.id.action_global_selectFragment)
             }
         })
     }

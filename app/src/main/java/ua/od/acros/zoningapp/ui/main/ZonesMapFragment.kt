@@ -81,7 +81,7 @@ class ZonesMapFragment : Fragment() {
         _binding = FragmentZonesMapBinding.inflate(inflater, container, false)
 
         binding.btnNewSearch.clicks().subscribe {
-            findNavController().navigate(R.id.action_zonesMapsFragment_to_selectFragment)
+            findNavController().navigate(R.id.action_global_selectFragment)
         }
 
         binding.btnBack.isEnabled = false
@@ -114,7 +114,7 @@ class ZonesMapFragment : Fragment() {
                     val args = Bundle()
                     args.putInt("fragment_id", HTMLPrintFragment.ZONE_FOR_PURPOSE)
                     findNavController().navigate(
-                        R.id.action_zonesMapFragment_to_HTMLPrintFragment,
+                        R.id.action_global_HTMLPrintFragment,
                         args
                     )
                 }

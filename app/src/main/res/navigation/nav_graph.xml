@@ -33,12 +33,7 @@
             android:id="@+id/action_chooseActionFragment_to_mapsFragment"
             app:destination="@id/selectZoneOnMapFragment" />
         <action
-            android:id="@+id/action_chooseActionFragment_to_selectFragment"
-            app:destination="@id/selectFragment"
-            app:popUpTo="@id/selectFragment"
-            app:popUpToInclusive="true" />
-        <action
-            android:id="@+id/action_chooseActionFragment_to_chooseBuildingFragment"
+           android:id="@+id/action_chooseActionFragment_to_chooseBuildingFragment"
             app:destination="@id/chooseBuildingFragment" />
     </fragment>
     <fragment
@@ -46,9 +41,6 @@
         android:name="ua.od.acros.zoningapp.ui.main.SelectZoneOnMapFragment"
         android:label="fragment_map"
         tools:layout="@layout/fragment_select_zone_on_map" >
-        <action
-            android:id="@+id/action_selectZoneOnMapFragment_to_chooseActionFragment"
-            app:destination="@id/chooseActionFragment" />
         <action
             android:id="@+id/action_selectZoneOnMapFragment_to_zoneExportFragment"
             app:destination="@id/zoneExportFragment" />
@@ -58,9 +50,6 @@
         android:name="ua.od.acros.zoningapp.ui.main.ChooseBuildingFragment"
         android:label="fragment_choose_building"
         tools:layout="@layout/fragment_choose_building" >
-        <action
-            android:id="@+id/action_chooseBuildingFragment_to_chooseActionFragment"
-            app:destination="@id/chooseActionFragment" />
         <action
             android:id="@+id/action_chooseBuildingFragment_to_zonesMapsFragment"
             app:destination="@id/zonesMapFragment" />
@@ -73,14 +62,6 @@
         <action
             android:id="@+id/action_zonesMapsFragment_to_chooseBuildingFragment"
             app:destination="@id/chooseBuildingFragment" />
-        <action
-            android:id="@+id/action_zonesMapsFragment_to_selectFragment"
-            app:destination="@id/selectFragment"
-            app:popUpTo="@id/selectFragment"
-            app:popUpToInclusive="true" />
-        <action
-            android:id="@+id/action_zonesMapFragment_to_HTMLPrintFragment"
-            app:destination="@id/HTMLPrintFragment" />
     </fragment>
     <fragment
         android:id="@+id/zoneExportFragment"
@@ -90,15 +71,6 @@
         <action
             android:id="@+id/action_zoneExportFragment_to_selectZoneOnMapFragment"
             app:destination="@id/selectZoneOnMapFragment" />
-        <action
-            android:id="@+id/action_zoneExportFragment_to_selectFragment"
-            app:destination="@id/selectFragment"
-            app:launchSingleTop="false"
-            app:popUpTo="@id/selectFragment"
-            app:popUpToInclusive="true" />
-        <action
-            android:id="@+id/action_zoneExportFragment_to_HTMLPrintFragment"
-            app:destination="@id/HTMLPrintFragment" />
     </fragment>
     <fragment
         android:id="@+id/HTMLPrintFragment"
@@ -112,4 +84,11 @@
             android:id="@+id/action_HTMLPrintFragment_to_zonesMapFragment"
             app:destination="@id/zonesMapFragment" />
     </fragment>
+    <action android:id="@+id/action_global_HTMLPrintFragment" app:destination="@id/HTMLPrintFragment" />
+    <action
+        android:id="@+id/action_global_selectFragment"
+        app:destination="@id/selectFragment"
+        app:popUpTo="@id/selectFragment"
+        app:popUpToInclusive="true" />
+    <action android:id="@+id/action_global_chooseActionFragment" app:destination="@id/chooseActionFragment" />
 </navigation>

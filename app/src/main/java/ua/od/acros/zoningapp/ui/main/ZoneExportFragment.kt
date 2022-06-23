@@ -41,14 +41,14 @@ class ZoneExportFragment : Fragment() {
         }
 
         binding.btnNewSearch.clicks().subscribe {
-            findNavController().navigate(R.id.action_zoneExportFragment_to_selectFragment)
+            findNavController().navigate(R.id.action_global_selectFragment)
         }
 
         binding.btnExportResults.clicks().subscribe {
             val args = Bundle()
             args.putInt("fragment_id", HTMLPrintFragment.ZONE_ON_MAP)
             findNavController().navigate(
-                R.id.action_zoneExportFragment_to_HTMLPrintFragment,
+                R.id.action_global_HTMLPrintFragment,
                 args
             )
         }
