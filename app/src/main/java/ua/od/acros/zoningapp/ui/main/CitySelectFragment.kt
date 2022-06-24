@@ -8,6 +8,7 @@ import android.view.ViewGroup
 import android.widget.AdapterView
 import android.widget.TextView
 import androidx.activity.OnBackPressedCallback
+import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import com.google.android.gms.ads.AdRequest
@@ -30,7 +31,9 @@ class CitySelectFragment : Fragment(), AdapterView.OnItemSelectedListener {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        _binding = FragmentCitySelectBinding.inflate(inflater, container, false)
+
+        _binding = DataBindingUtil.inflate(inflater, R.layout.fragment_city_select,
+            container, false)
 
         this.context?.let { MobileAds.initialize(it) }
         val adRequest = AdRequest.Builder().build()
@@ -38,29 +41,29 @@ class CitySelectFragment : Fragment(), AdapterView.OnItemSelectedListener {
 
         val sharedViewModel = (activity as MainActivity).getViewModel()
 
-        sharedViewModel.mCityList.observe(viewLifecycleOwner) { list ->
-            if (list != null) {
-                val spinnerAdapter: CustomAdapter<String>? = context?.let {
-                    CustomAdapter(
-                        it,
-                        R.layout.spinner_item,
-                        it.resources.getStringArray(R.array.city_names).toList()
-                    )
-                }
-                spinnerAdapter?.setDropDownViewResource(R.layout.spinner_dropdown_item)
-                binding.spCities?.adapter = spinnerAdapter
-                binding.spCities?.onItemSelectedListener = this
+        binding.viewModel = sharedViewModel
 
-                binding.btnSelect?.isEnabled = false
-                binding.btnSelect?.clicks()?.subscribe {
-                    val id = (binding.spCities?.selectedItemId?.minus(1))?.toInt()
-                    val city = list[id!!]
-                    sharedViewModel.setCity(city)
-                    sharedViewModel.parseBuildings(city)
-                    sharedViewModel.prepareMapForCity(city)
-                    findNavController().navigate(R.id.action_selectFragment_to_chooseActionFragment)
-                }
-            }
+        context?.let {
+            sharedViewModel.setCityNameList(it.resources.getStringArray(R.array.city_names).toList())
+            val spinnerAdapter: CustomAdapter<String> = CustomAdapter(
+                it,
+                R.layout.spinner_item,
+                mutableListOf()
+            )
+
+            spinnerAdapter.setDropDownViewResource(R.layout.spinner_dropdown_item)
+            binding.spCities?.adapter = spinnerAdapter
+            binding.spCities?.onItemSelectedListener = this
+        }
+
+        binding.btnSelect?.isEnabled = false
+        binding.btnSelect?.clicks()?.subscribe {
+            val id = (binding.spCities?.selectedItemId?.minus(1))?.toInt()
+            val city = sharedViewModel.getCityList()[id!!]
+            sharedViewModel.setCity(city)
+            sharedViewModel.parseBuildings(city)
+            sharedViewModel.prepareMapForCity(city)
+            findNavController().navigate(R.id.action_selectFragment_to_chooseActionFragment)
         }
 
         return binding.root
@@ -77,12 +80,14 @@ class CitySelectFragment : Fragment(), AdapterView.OnItemSelectedListener {
 
     @SuppressLint("ResourceAsColor")
     override fun onItemSelected(p0: AdapterView<*>?, p1: View?, p2: Int, p3: Long) {
-        val textView = p1 as TextView
-        if (p2 == 0) {
-            binding.btnSelect?.isEnabled = false
-            textView.setTextColor(R.color.button_text_color_disabled)
-        } else {
-            binding.btnSelect?.isEnabled = true
+        if (p1 != null) {
+            val textView = p1 as TextView
+            if (p2 == 0) {
+                binding.btnSelect?.isEnabled = false
+                textView.setTextColor(R.color.button_text_color_disabled)
+            } else {
+                binding.btnSelect?.isEnabled = true
+            }
         }
     }
 

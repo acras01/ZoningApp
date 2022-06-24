@@ -10,11 +10,11 @@ import android.widget.AdapterView
 import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
+import androidx.databinding.DataBindingUtil
 import androidx.navigation.fragment.findNavController
 import com.google.android.gms.ads.AdRequest
 import com.google.android.gms.ads.MobileAds
 import com.jakewharton.rxbinding4.view.clicks
-import ua.od.acros.zoningapp.misc.utils.Building
 import ua.od.acros.zoningapp.misc.utils.CustomAdapter
 import ua.od.acros.zoningapp.R
 import ua.od.acros.zoningapp.databinding.FragmentChooseBuildingBinding
@@ -34,15 +34,14 @@ class ChooseBuildingFragment : Fragment(), AdapterView.OnItemSelectedListener {
     private var typeSelected = ""
     private var groupSelected = ""
 
-    private lateinit var buildings: List<Building>
-
     @SuppressLint("MissingPermission")
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
 
-        _binding = FragmentChooseBuildingBinding.inflate(inflater, container, false)
+        _binding = DataBindingUtil.inflate(inflater, R.layout.fragment_choose_building,
+            container, false)
 
         binding.btnFindZone.isEnabled = false
         binding.spBuildingType.isEnabled = false
@@ -53,29 +52,42 @@ class ChooseBuildingFragment : Fragment(), AdapterView.OnItemSelectedListener {
 
         sharedViewModel = (activity as MainActivity).getViewModel()
 
-        sharedViewModel.mBuildingList.observe(viewLifecycleOwner) { buildingList ->
-            if (buildingList != null) {
-                buildings = buildingList
-                val groupList =
-                    context?.resources?.getStringArray(R.array.building_groups)?.toMutableList()
+        binding.viewModel = sharedViewModel
 
-                if (groupList != null) {
-
-                    sharedViewModel.getGroupList()?.let { groupList.addAll(it) }
-
-                    val spinnerAdapter: CustomAdapter<String>? = context?.let { context ->
-                        CustomAdapter(
-                            context,
-                            R.layout.spinner_item,
-                            groupList
-                        )
-                    }
-
-                    spinnerAdapter?.setDropDownViewResource(R.layout.spinner_dropdown_item)
-                    binding.spBuildingGroup.adapter = spinnerAdapter
-                    binding.spBuildingGroup.onItemSelectedListener = this
-                }
+        val groupList = context?.resources?.getStringArray(R.array.building_groups)?.toMutableList()
+        if (groupList != null) {
+            val spinnerAdapter: CustomAdapter<String>? = context?.let { context ->
+                CustomAdapter(
+                    context,
+                    R.layout.spinner_item,
+                    groupList
+                )
             }
+            spinnerAdapter?.setDropDownViewResource(R.layout.spinner_dropdown_item)
+            binding.spBuildingGroup.adapter = spinnerAdapter
+            binding.spBuildingGroup.onItemSelectedListener = this
+            binding.spBuildingGroup.isEnabled = false
+            sharedViewModel.setGroupList()
+        }
+
+        val typeList =
+            context?.resources?.getStringArray(R.array.building_types)?.toMutableList()
+        if (typeList != null) {
+            val spinnerAdapter: CustomAdapter<String>? = context?.let { context ->
+                CustomAdapter<String>(
+                    context,
+                    R.layout.spinner_item,
+                    typeList
+                )
+            }
+            spinnerAdapter?.setDropDownViewResource(R.layout.spinner_dropdown_item)
+            binding.spBuildingType.adapter = spinnerAdapter
+            binding.spBuildingType.onItemSelectedListener = this
+            binding.spBuildingType.isEnabled = false
+        }
+
+        sharedViewModel.mGroupListReady.observe(viewLifecycleOwner) {
+            binding.spBuildingGroup.isEnabled = it
         }
 
         binding.btnFindZone.clicks().subscribe {
@@ -96,7 +108,7 @@ class ChooseBuildingFragment : Fragment(), AdapterView.OnItemSelectedListener {
     }
 
     override fun onItemSelected(p0: AdapterView<*>?, p1: View?, p2: Int, p3: Long) {
-        if (p0 != null && p1 != null) {
+        if (p1 != null) {
             val textView = p1 as TextView
             if (p2 == 0) {
                 textView.setTextColor(R.color.button_text_color_disabled)
@@ -105,26 +117,10 @@ class ChooseBuildingFragment : Fragment(), AdapterView.OnItemSelectedListener {
                 binding.spBuildingGroup -> {
                     groupSelectionMade = p2 > 0
                     binding.spBuildingType.isEnabled = groupSelectionMade
+                    binding.spBuildingType.setSelection(0)
                     if (groupSelectionMade) {
                         groupSelected = textView.text.toString()
-
-                        val typeList =
-                            context?.resources?.getStringArray(R.array.building_types)?.toMutableList()
-
-                        if (typeList != null) {
-                            sharedViewModel.getTypeListForGroup(groupSelected)
-                                ?.let { typeList.addAll(it) }
-                            val spinnerAdapter: CustomAdapter<String>? = context?.let { context ->
-                                CustomAdapter<String>(
-                                    context,
-                                    R.layout.spinner_item,
-                                    typeList
-                                )
-                            }
-                            spinnerAdapter?.setDropDownViewResource(R.layout.spinner_dropdown_item)
-                            binding.spBuildingType.adapter = spinnerAdapter
-                            binding.spBuildingType.onItemSelectedListener = this
-                        }
+                        sharedViewModel.setTypeList(groupSelected)
                     }
                 }
                 binding.spBuildingType -> {

@@ -1,149 +1,161 @@
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context="ua.od.acros.zoningapp.ui.main.ZoneExportFragment">
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app= "http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools" >
 
-    <TextView
-        android:id="@+id/tv_selectedZone"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="32dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="32dp"
-        android:layout_marginBottom="8dp"
-        android:text="@string/selected_zones"
-        android:textColor="@color/black"
-        android:textSize="24sp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+    <data>
+        <variable
+            name="viewModel"
+            type="ua.od.acros.zoningapp.vm.MainViewModel" />
+    </data>
 
-    <androidx.core.widget.NestedScrollView
-        android:id="@+id/sv_zoneDesc"
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="8dp"
-        app:layout_constraintBottom_toTopOf="@+id/btn_exportResults"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tv_selectedZone">
+        android:layout_height="match_parent"
+        tools:context="ua.od.acros.zoningapp.ui.main.ZoneExportFragment">
 
+        <TextView
+            android:id="@+id/tv_selectedZone"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="32dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="32dp"
+            android:layout_marginBottom="8dp"
+            android:text="@{@string/selected_zones(viewModel.selectedZone.component1())"
+            android:textColor="@color/black"
+            android:textSize="24sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
-        <androidx.appcompat.widget.LinearLayoutCompat
+        <androidx.core.widget.NestedScrollView
+            android:id="@+id/sv_zoneDesc"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="vertical">
+            android:layout_height="0dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="8dp"
+            app:layout_constraintBottom_toTopOf="@+id/btn_exportResults"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tv_selectedZone">
 
-            <TextView
-                android:id="@+id/tv_zoneDesc1"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="8dp"
-                android:layout_marginTop="8dp"
-                android:layout_marginEnd="8dp"
-                android:background="@android:color/holo_green_light"
-                android:text="@string/preferred"
-                android:textColor="@color/black"
-                android:textSize="20sp" />
 
-            <TextView
-                android:id="@+id/tv_zoneDesc2"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="8dp"
-                android:layout_marginTop="8dp"
-                android:layout_marginEnd="8dp"
-                android:textColor="@color/black"
-                android:textSize="20sp" />
+            <androidx.appcompat.widget.LinearLayoutCompat
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical">
 
-            <TextView
-                android:id="@+id/tv_zoneDesc3"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="8dp"
-                android:layout_marginTop="8dp"
-                android:layout_marginEnd="8dp"
-                android:background="@android:color/holo_orange_light"
-                android:text="@string/accompanying"
-                android:textColor="@color/black"
-                android:textSize="20sp" />
+                <TextView
+                    android:id="@+id/tv_zoneDesc1"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginEnd="8dp"
+                    android:background="@android:color/holo_green_light"
+                    android:text="@string/preferred"
+                    android:textColor="@color/black"
+                    android:textSize="20sp" />
 
-            <TextView
-                android:id="@+id/tv_zoneDesc4"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="8dp"
-                android:layout_marginTop="8dp"
-                android:layout_marginEnd="8dp"
-                android:textColor="@color/black"
-                android:textSize="20sp" />
+                <TextView
+                    android:id="@+id/tv_zoneDesc2"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginEnd="8dp"
+                    android:textColor="@color/black"
+                    android:textSize="20sp"
+                    android:text="@{viewModel.selectedZone.component2()[0]" />
 
-            <TextView
-                android:id="@+id/tv_zoneDesc5"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="8dp"
-                android:layout_marginTop="8dp"
-                android:layout_marginEnd="8dp"
-                android:background="@android:color/holo_blue_light"
-                android:text="@string/acceptable"
-                android:textColor="@color/black"
-                android:textSize="20sp" />
+                <TextView
+                    android:id="@+id/tv_zoneDesc3"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginEnd="8dp"
+                    android:background="@android:color/holo_orange_light"
+                    android:text="@string/accompanying"
+                    android:textColor="@color/black"
+                    android:textSize="20sp" />
 
-            <TextView
-                android:id="@+id/tv_zoneDesc6"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="8dp"
-                android:layout_marginTop="8dp"
-                android:layout_marginEnd="8dp"
-                android:textColor="@color/black"
-                android:textSize="20sp" />
-        </androidx.appcompat.widget.LinearLayoutCompat>
-    </androidx.core.widget.NestedScrollView>
+                <TextView
+                    android:id="@+id/tv_zoneDesc4"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginEnd="8dp"
+                    android:textColor="@color/black"
+                    android:textSize="20sp"
+                    android:text="@{viewModel.selectedZone.component2()[1]" />
 
-    <Button
-        android:id="@+id/btn_exportResults"
-        android:layout_width="192dp"
-        android:layout_height="64dp"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="16dp"
-        android:backgroundTint="@color/button_state_colors"
-        android:text="@string/export_zones"
-        android:textColor="@color/button_text_state_colors"
-        app:layout_constraintBottom_toTopOf="@+id/btn_newSearch"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/sv_zoneDesc" />
+                <TextView
+                    android:id="@+id/tv_zoneDesc5"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginEnd="8dp"
+                    android:background="@android:color/holo_blue_light"
+                    android:text="@string/acceptable"
+                    android:textColor="@color/black"
+                    android:textSize="20sp" />
 
-    <Button
-        android:id="@+id/btn_newSearch"
-        android:layout_width="192dp"
-        android:layout_height="64dp"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="16dp"
-        android:backgroundTint="@color/button_state_colors"
-        android:text="@string/new_search"
-        android:textColor="@color/button_text_state_colors"
-        app:layout_constraintBottom_toTopOf="@+id/av_zoneExportFragmentBanner"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/btn_exportResults" />
+                <TextView
+                    android:id="@+id/tv_zoneDesc6"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginEnd="8dp"
+                    android:textColor="@color/black"
+                    android:textSize="20sp"
+                    android:text="@{viewModel.selectedZone.component2()[2]" />
+            </androidx.appcompat.widget.LinearLayoutCompat>
+        </androidx.core.widget.NestedScrollView>
 
-    <com.google.android.gms.ads.AdView
-        android:id="@+id/av_zoneExportFragmentBanner"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerInParent="true"
-        app:adSize="BANNER"
-        app:adUnitId="ca-app-pub-5575310058998232/5854634701"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
-</androidx.constraintlayout.widget.ConstraintLayout>
+        <Button
+            android:id="@+id/btn_exportResults"
+            android:layout_width="192dp"
+            android:layout_height="64dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="16dp"
+            android:backgroundTint="@color/button_state_colors"
+            android:text="@string/export_zones"
+            android:textColor="@color/button_text_state_colors"
+            app:layout_constraintBottom_toTopOf="@+id/btn_newSearch"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/sv_zoneDesc" />
+
+        <Button
+            android:id="@+id/btn_newSearch"
+            android:layout_width="192dp"
+            android:layout_height="64dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="16dp"
+            android:backgroundTint="@color/button_state_colors"
+            android:text="@string/new_search"
+            android:textColor="@color/button_text_state_colors"
+            app:layout_constraintBottom_toTopOf="@+id/av_zoneExportFragmentBanner"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/btn_exportResults" />
+
+        <com.google.android.gms.ads.AdView
+            android:id="@+id/av_zoneExportFragmentBanner"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            app:adSize="BANNER"
+            app:adUnitId="ca-app-pub-5575310058998232/5854634701"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

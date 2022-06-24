@@ -15,6 +15,7 @@ import android.webkit.WebViewClient
 import androidx.activity.OnBackPressedCallback
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
+import com.jakewharton.rxbinding4.view.clicks
 import ua.od.acros.zoningapp.R
 import ua.od.acros.zoningapp.databinding.FragmentHtmlPrintBinding
 import ua.od.acros.zoningapp.vm.MainViewModel
@@ -22,20 +23,20 @@ import java.io.ByteArrayOutputStream
 
 class HTMLPrintFragment : Fragment() {
 
+    private var fragmentId: Int = 0
+
     private var _binding: FragmentHtmlPrintBinding? = null
 
     private val binding get() = _binding!!
 
     private lateinit var sharedViewModel: MainViewModel
 
-    private var myWebView: WebView? = null
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         sharedViewModel = (activity as MainActivity).getViewModel()
 
-        val fragmentId = arguments?.getInt("fragment_id")!!
+        fragmentId = arguments?.getInt("fragment_id")!!
 
         activity?.onBackPressedDispatcher?.addCallback(this, object : OnBackPressedCallback(true) {
             override fun handleOnBackPressed() {
@@ -45,7 +46,6 @@ class HTMLPrintFragment : Fragment() {
                 }
             }
         })
-        printWebView(fragmentId)
     }
 
     override fun onCreateView(
@@ -53,25 +53,25 @@ class HTMLPrintFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         _binding = FragmentHtmlPrintBinding.inflate(inflater, container, false)
+        binding.fabSaveResults.isEnabled = false
+        binding.fabSaveResults.clicks().subscribe {
+            createWebPrintJob(binding.webview)
+        }
+        printWebView(fragmentId)
         return binding.root
     }
 
     private fun printWebView(fragmentId: Int) {
-        val webView = activity?.let { WebView(it) }
-        if (webView != null) {
-            webView.webViewClient = object : WebViewClient() {
-                override fun shouldOverrideUrlLoading(
-                    view: WebView,
-                    request: WebResourceRequest
-                ): Boolean {
-                    return false
-                }
+        binding.webview.webViewClient = object : WebViewClient() {
+            override fun shouldOverrideUrlLoading(
+                view: WebView,
+                request: WebResourceRequest
+            ): Boolean {
+                return true
+            }
 
-                override fun onPageFinished(view: WebView, url: String) {
-                    createWebPrintJob(view)
-                    myWebView = null
-                    activity?.onBackPressed()
-                }
+            override fun onPageFinished(view: WebView, url: String) {
+                binding.fabSaveResults.isEnabled = true
             }
         }
 
@@ -81,11 +81,10 @@ class HTMLPrintFragment : Fragment() {
             ZONE_FOR_PURPOSE -> html = prepareHtmlForSelectedPurposes()
         }
 
-        webView?.loadDataWithBaseURL(
+        binding.webview.loadDataWithBaseURL(
             null, html,
             "text/HTML", "UTF-8", null
         )
-        myWebView = webView
     }
 
     private fun prepareHtmlForSelectedZone(): String {
@@ -99,13 +98,13 @@ class HTMLPrintFragment : Fragment() {
                 THIRD_GROUP +
                 "<h3>{ZONE3_PLACEHOLDER}</h3>\n"
 
-        var zoneDesc = sharedViewModel.mSelectedZone.value!!.first
+        var zoneDesc = sharedViewModel.getSelectedZone().get()?.first
         html = html.replace("{ZONE_PLACEHOLDER}", zoneDesc!!)
-        zoneDesc = sharedViewModel.mSelectedZone.value!!.second!![0]
+        zoneDesc = sharedViewModel.getSelectedZone().get()?.second!![0]
         html = html.replace("{ZONE1_PLACEHOLDER}", zoneDesc)
-        zoneDesc = sharedViewModel.mSelectedZone.value!!.second!![1]
+        zoneDesc = sharedViewModel.getSelectedZone().get()?.second!![1]
         html = html.replace("{ZONE2_PLACEHOLDER}", zoneDesc)
-        zoneDesc = sharedViewModel.mSelectedZone.value!!.second!![2]
+        zoneDesc = sharedViewModel.getSelectedZone().get()?.second!![2]
         html = html.replace("{ZONE3_PLACEHOLDER}", zoneDesc)
         html = html.replace("\n", "<br>")
 
@@ -124,7 +123,7 @@ class HTMLPrintFragment : Fragment() {
                 "<p>&nbsp;</p>\n" +
                 "<h3>{LEGEND_PLACEHOLDER}</h3>"
 
-        var zoneDesc = sharedViewModel.mSelectedZone.value!!.first
+        var zoneDesc = sharedViewModel.getSelectedZone().get()?.first
         var type = ""
         var legend = ""
         when (zoneDesc?.last()) {
@@ -143,7 +142,7 @@ class HTMLPrintFragment : Fragment() {
         }
         html = html.replace("{ZONE_PLACEHOLDER}", zoneDesc!!.dropLast(1))
         html = html.replace("{TYPE_PLACEHOLDER}", type)
-        zoneDesc = sharedViewModel.mSelectedZone.value!!.second!![0]
+        zoneDesc = sharedViewModel.getSelectedZone().get()?.second!![0]
         html = html.replace("{GROUP_PLACEHOLDER}", zoneDesc)
         html = html.replace("{LEGEND_PLACEHOLDER}", legend)
         html = html.replace("\n", "<br>")

@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.activity.OnBackPressedCallback
+import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import com.google.android.gms.ads.AdRequest
@@ -23,22 +24,16 @@ class ZoneExportFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        _binding = FragmentZoneExportBinding.inflate(inflater, container, false)
+        _binding = DataBindingUtil.inflate(inflater, R.layout.fragment_zone_export,
+            container, false)
+
+        val sharedViewModel = (activity as MainActivity).getViewModel()
+
+        binding.viewModel = sharedViewModel
 
         this.context?.let { MobileAds.initialize(it) }
         val adRequest = AdRequest.Builder().build()
         binding.avZoneExportFragmentBanner.loadAd(adRequest)
-
-        val sharedViewModel = (activity as MainActivity).getViewModel()
-
-        sharedViewModel.mSelectedZone.observe(viewLifecycleOwner) { zone ->
-            if(zone.first != null && zone.second != null) {
-                binding.tvSelectedZone.text = getString(R.string.selected_zones, zone.first)
-                binding.tvZoneDesc2.text = zone.second!![0]
-                binding.tvZoneDesc4.text = zone.second!![1]
-                binding.tvZoneDesc6.text = zone.second!![2]
-            }
-        }
 
         binding.btnNewSearch.clicks().subscribe {
             findNavController().navigate(R.id.action_global_selectFragment)

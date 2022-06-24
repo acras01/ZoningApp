@@ -1,96 +1,107 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context=".ui.main.ChooseBuildingFragment">
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app= "http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools" >
 
-    <TextView
-        android:id="@+id/tv_chooseIntentions"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="24dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginBottom="8dp"
-        android:text="@string/choose_intentions"
-        android:textAlignment="center"
-        android:textColor="@color/black"
-        android:textSize="24sp"
-        app:layout_constraintBottom_toTopOf="@+id/ll"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+    <data>
+        <variable
+            name="viewModel"
+            type="ua.od.acros.zoningapp.vm.MainViewModel" />
+    </data>
 
-    <androidx.appcompat.widget.LinearLayoutCompat
-        android:id="@+id/ll"
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="8dp"
-        android:orientation="vertical"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tv_chooseIntentions">
+        android:layout_height="match_parent"
+        tools:context=".ui.main.ChooseBuildingFragment">
 
-        <Spinner
-            android:id="@+id/sp_buildingGroup"
-            android:layout_width="match_parent"
+        <TextView
+            android:id="@+id/tv_chooseIntentions"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="32dp"
-            android:layout_marginTop="8dp"
-            android:layout_marginEnd="32dp"
-            android:dropDownWidth="match_parent"
-            android:minHeight="48dp"
-            android:spinnerMode="dropdown"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="24dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginBottom="8dp"
+            android:text="@string/choose_intentions"
             android:textAlignment="center"
-            android:verticalScrollbarPosition="defaultPosition"
-            tools:ignore="SpeakableTextPresentCheck,DuplicateSpeakableTextCheck"
-            tools:listitem="@layout/spinner_item" />
+            android:textColor="@color/black"
+            android:textSize="24sp"
+            app:layout_constraintBottom_toTopOf="@+id/ll"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
-        <Spinner
-            android:id="@+id/sp_buildingType"
+        <androidx.appcompat.widget.LinearLayoutCompat
+            android:id="@+id/ll"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginStart="32dp"
+            android:layout_marginStart="8dp"
             android:layout_marginTop="8dp"
-            android:layout_marginEnd="32dp"
+            android:layout_marginEnd="8dp"
+            android:orientation="vertical"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tv_chooseIntentions">
+
+            <Spinner
+                android:id="@+id/sp_buildingGroup"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="32dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginEnd="32dp"
+                android:dropDownWidth="match_parent"
+                android:minHeight="48dp"
+                android:spinnerMode="dropdown"
+                android:textAlignment="center"
+                android:verticalScrollbarPosition="defaultPosition"
+                tools:ignore="SpeakableTextPresentCheck,DuplicateSpeakableTextCheck"
+                tools:listitem="@layout/spinner_item"
+                app:items="@{viewModel.groupList}" />
+
+            <Spinner
+                android:id="@+id/sp_buildingType"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="32dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginEnd="32dp"
+                android:layout_marginBottom="32dp"
+                android:dropDownWidth="match_parent"
+                android:minHeight="48dp"
+                android:spinnerMode="dropdown"
+                android:textAlignment="center"
+                android:verticalScrollbarPosition="defaultPosition"
+                tools:ignore="SpeakableTextPresentCheck"
+                tools:listitem="@layout/spinner_item"
+                app:items="@{viewModel.typeList}" />
+        </androidx.appcompat.widget.LinearLayoutCompat>
+
+        <Button
+            android:id="@+id/btn_findZone"
+            android:layout_width="wrap_content"
+            android:layout_height="64dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="32dp"
+            android:layout_marginEnd="8dp"
             android:layout_marginBottom="32dp"
-            android:dropDownWidth="match_parent"
-            android:minHeight="48dp"
-            android:spinnerMode="dropdown"
-            android:textAlignment="center"
-            android:verticalScrollbarPosition="defaultPosition"
-            tools:ignore="SpeakableTextPresentCheck"
-            tools:listitem="@layout/spinner_item" />
-    </androidx.appcompat.widget.LinearLayoutCompat>
+            android:backgroundTint="@color/button_state_colors"
+            android:text="@string/find_zone"
+            android:textColor="@color/button_text_state_colors"
+            app:layout_constraintBottom_toTopOf="@+id/av_selectBuildingFragmentBanner"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/ll" />
 
-    <Button
-        android:id="@+id/btn_findZone"
-        android:layout_width="wrap_content"
-        android:layout_height="64dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="32dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginBottom="32dp"
-        android:backgroundTint="@color/button_state_colors"
-        android:text="@string/find_zone"
-        android:textColor="@color/button_text_state_colors"
-        app:layout_constraintBottom_toTopOf="@+id/av_selectBuildingFragmentBanner"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/ll" />
-
-    <com.google.android.gms.ads.AdView
-        android:id="@+id/av_selectBuildingFragmentBanner"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerInParent="true"
-        app:adSize="BANNER"
-        app:adUnitId="ca-app-pub-5575310058998232/5854634701"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
-</androidx.constraintlayout.widget.ConstraintLayout>
+        <com.google.android.gms.ads.AdView
+            android:id="@+id/av_selectBuildingFragmentBanner"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            app:adSize="BANNER"
+            app:adUnitId="ca-app-pub-5575310058998232/5854634701"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

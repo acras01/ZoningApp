@@ -1,5 +1,6 @@
 package ua.od.acros.zoningapp.misc.utils
 
+
 import android.content.Context
 import android.graphics.Color
 import android.view.View
@@ -10,7 +11,8 @@ import android.widget.TextView
 class CustomAdapter<String>(
     context: Context,
     layoutID: Int,
-    dataSource: List<String>): ArrayAdapter<String>(context, layoutID, dataSource) {
+    private var dataSource: MutableList<String>
+): ArrayAdapter<String>(context, layoutID, dataSource) {
 
     override fun isEnabled(position: Int): Boolean {
         return position != 0
@@ -28,4 +30,17 @@ class CustomAdapter<String>(
         return view
     }
 
+    fun replaceData(items: List<String>) {
+        setList(items)
+    }
+
+    private fun setList(items: List<String>) {
+        if (dataSource.isNotEmpty()) {
+            val first = dataSource[0]
+            dataSource.clear()
+            dataSource.add(first)
+        }
+        dataSource.addAll(items)
+        notifyDataSetChanged()
+    }
 }

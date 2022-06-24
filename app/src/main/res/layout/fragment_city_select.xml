@@ -1,71 +1,81 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/main"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@color/background"
-    tools:context=".ui.main.CitySelectFragment">
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app= "http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools" >
 
-    <TextView
-        android:id="@+id/tv_exportData"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/city_select_fragment"
-        android:textAlignment="center"
-        android:textSize="24sp"
-        android:textColor="@color/black"
-        app:layout_constraintBottom_toTopOf="@+id/sp_cities"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.234" />
+    <data>
+        <variable
+            name="viewModel"
+            type="ua.od.acros.zoningapp.vm.MainViewModel" />
+    </data>
 
-    <Spinner
-        android:id="@+id/sp_cities"
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/main"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="32dp"
-        android:layout_marginEnd="32dp"
-        android:dropDownWidth="match_parent"
-        android:minHeight="48dp"
-        android:spinnerMode="dropdown"
-        android:textAlignment="center"
-        android:verticalScrollbarPosition="defaultPosition"
-        app:layout_constraintBottom_toTopOf="@+id/btn_select"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tv_exportData"
-        tools:ignore="SpeakableTextPresentCheck"
-        tools:listitem="@layout/spinner_item" />
+        android:layout_height="match_parent"
+        android:background="@color/background"
+        tools:context=".ui.main.CitySelectFragment">
 
-    <Button
-        android:id="@+id/btn_select"
-        android:layout_width="192dp"
-        android:layout_height="64dp"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="16dp"
-        android:backgroundTint="@color/button_state_colors"
-        android:text="@string/select_city"
-        android:textColor="@color/button_text_state_colors"
-        app:layout_constraintBottom_toTopOf="@+id/av_selectFragmentBanner"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.498"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/sp_cities" />
+        <TextView
+            android:id="@+id/tv_exportData"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/city_select_fragment"
+            android:textAlignment="center"
+            android:textSize="24sp"
+            android:textColor="@color/black"
+            app:layout_constraintBottom_toTopOf="@+id/sp_cities"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.234" />
 
-    <com.google.android.gms.ads.AdView
-        android:id="@+id/av_selectFragmentBanner"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerInParent="true"
-        app:adSize="BANNER"
-        app:adUnitId="ca-app-pub-5575310058998232/5854634701"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+        <Spinner
+            android:id="@+id/sp_cities"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="32dp"
+            android:layout_marginEnd="32dp"
+            android:dropDownWidth="match_parent"
+            android:minHeight="48dp"
+            android:spinnerMode="dropdown"
+            android:textAlignment="center"
+            android:verticalScrollbarPosition="defaultPosition"
+            app:layout_constraintBottom_toTopOf="@+id/btn_select"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tv_exportData"
+            tools:ignore="SpeakableTextPresentCheck"
+            tools:listitem="@layout/spinner_item"
+            app:items="@{viewModel.cityNameList}" />
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+        <Button
+            android:id="@+id/btn_select"
+            android:layout_width="192dp"
+            android:layout_height="64dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="16dp"
+            android:backgroundTint="@color/button_state_colors"
+            android:text="@string/select_city"
+            android:textColor="@color/button_text_state_colors"
+            app:layout_constraintBottom_toTopOf="@+id/av_selectFragmentBanner"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.498"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/sp_cities" />
+
+        <com.google.android.gms.ads.AdView
+            android:id="@+id/av_selectFragmentBanner"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            app:adSize="BANNER"
+            app:adUnitId="ca-app-pub-5575310058998232/5854634701"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>
