@@ -48,4 +48,5 @@
     <string name="not_functional_check">E-City не буде повністю функціональним. Якщо ви бажаєте це змінити, будь-ласка, надайте дозволи в Налаштуваннях системи</string>
     <string name="enter_address_title">Введіть адресу</string>
     <string name="enter_address_button">Вказати адресу</string>
+    <string name="no_zones_found">Відповідної зони не знайдено</string>
 </resources>

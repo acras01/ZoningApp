@@ -48,4 +48,5 @@
     <string name="not_functional">E-City won\'t be fully functional</string>
     <string name="not_functional_check">E-City won\'t be fully functional. Any time you want to change it, please, go to System Settings and grant permissions</string>
     <string name="enter_address_button">Enter desired address</string>
+    <string name="no_zones_found">No appropriate zone found</string>
 </resources>
