@@ -124,7 +124,7 @@ class ZoneSVGParser {
         parser.next()
         parser.require(XmlPullParser.END_TAG, ns, "circle")
 
-        val yx = mercator.merc(LatLng(46.452131, 30.673344))
+        //val yx = mercator.merc(LatLng(46.452131, 30.673344))
 
         return Zone.Circle(center, radius, fill, stroke)
     }
