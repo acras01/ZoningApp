@@ -57,51 +57,53 @@ class SelectZoneOnMapFragment : Fragment() {
 
         _binding = FragmentSelectZoneOnMapBinding.inflate(inflater, container, false)
 
-        binding.btnEnterAddress.isEnabled = false
-        binding.btnCurrentLocation.isEnabled = false
-        binding.btnShowSelectedZone.isEnabled = false
+        binding.apply {
+            btnEnterAddress.isEnabled = false
+            btnCurrentLocation.isEnabled = false
+            btnShowSelectedZone.isEnabled = false
 
-        sharedViewModel = (activity as MainActivity).getViewModel()
+            sharedViewModel = (activity as MainActivity).getViewModel()
 
-        sharedViewModel.mCityZones.observe(viewLifecycleOwner) { zones ->
-            this.zones = zones
-            binding.btnEnterAddress.isEnabled = true
-            binding.btnCurrentLocation.isEnabled = sharedViewModel.mLocationPerm.value == true
-        }
-
-        sharedViewModel.mBuildingList.observe(viewLifecycleOwner) { buildings ->
-            this.buildings = buildings
-        }
-
-        sharedViewModel.mLocation.observe(viewLifecycleOwner) { location ->
-            if (::googleMap.isInitialized && location != null) {
-                addMarker(location)
+            sharedViewModel.mCityZones.observe(viewLifecycleOwner) { zones ->
+                this@SelectZoneOnMapFragment.zones = zones
+                btnEnterAddress.isEnabled = true
+                btnCurrentLocation.isEnabled = sharedViewModel.mLocationPerm.value == true
             }
-        }
 
-        binding.btnEnterAddress.clicks().subscribe {
-            val dialog = EnterAddressDialogFragment()
-            activity?.let { a -> dialog.show(a.supportFragmentManager, "EnterAddressDialogFragment") }
-        }
-
-        binding.btnCurrentLocation.clicks().subscribe {
-            sharedViewModel.requestCurrentLocation()
-        }
-
-        binding.btnShowSelectedZone.clicks().subscribe {
-            val result = sharedViewModel.getInfoForZone(marker?.title)
-            sharedViewModel.setSelectedZone(marker?.title to result)
-            googleMap.snapshot { bitmap ->
-                sharedViewModel.setBitmap(bitmap)
+            sharedViewModel.mBuildingList.observe(viewLifecycleOwner) { buildings ->
+                this@SelectZoneOnMapFragment.buildings = buildings
             }
-            findNavController().navigate(R.id.action_selectZoneOnMapFragment_to_zoneExportFragment)
+
+            sharedViewModel.mLocation.observe(viewLifecycleOwner) { location ->
+                if (::googleMap.isInitialized && location != null) {
+                    addMarker(location)
+                }
+            }
+
+            btnEnterAddress.clicks().subscribe {
+                val dialog = EnterAddressDialogFragment()
+                activity?.let { a -> dialog.show(a.supportFragmentManager, "EnterAddressDialogFragment") }
+            }
+
+            btnCurrentLocation.clicks().subscribe {
+                sharedViewModel.requestCurrentLocation()
+            }
+
+            btnShowSelectedZone.clicks().subscribe {
+                val result = sharedViewModel.getInfoForZone(marker?.title)
+                sharedViewModel.setSelectedZone(marker?.title to result)
+                googleMap.snapshot { bitmap ->
+                    sharedViewModel.setBitmap(bitmap)
+                }
+                findNavController().navigate(R.id.action_selectZoneOnMapFragment_to_zoneExportFragment)
+            }
+
+            activity?.let { MobileAds.initialize(it) }
+            val adRequest = AdRequest.Builder().build()
+            avMapsFragmentBanner.loadAd(adRequest)
+
+            return root
         }
-
-        this.context?.let { MobileAds.initialize(it) }
-        val adRequest = AdRequest.Builder().build()
-        binding.avMapsFragmentBanner.loadAd(adRequest)
-
-        return binding.root
     }
 
     private fun addMarker(latLng: LatLng) {

@@ -28,26 +28,29 @@ class ChooseActionFragment : Fragment() {
     ): View {
         _binding = FragmentChooseActionBinding.inflate(inflater, container, false)
 
-        this.context?.let { MobileAds.initialize(it) }
-        val adRequest = AdRequest.Builder().build()
-        binding.avActionFragmentBanner.loadAd(adRequest)
-
         val sharedViewModel = (activity as MainActivity).getViewModel()
 
-        val onCheckPlot: () -> Unit = {
-            if (sharedViewModel.mLocationPerm.value == true) {
-                findNavController().navigate(R.id.action_chooseActionFragment_to_mapsFragment)
-            } else
-                Toast.makeText(context, R.string.give_location_permission, Toast.LENGTH_LONG).show()
-        }
-        binding.tvCheckMyPlot.clicks().subscribe { onCheckPlot() }
+        binding.apply {
+            activity?.let { MobileAds.initialize(it) }
+            val adRequest = AdRequest.Builder().build()
+            avActionFragmentBanner.loadAd(adRequest)
 
-        val onRecommendPlot: () -> Unit = {
-            findNavController().navigate(R.id.action_chooseActionFragment_to_chooseBuildingFragment)
-        }
-        binding.tvRecommendPlot.clicks().subscribe { onRecommendPlot() }
+            val onCheckPlot: () -> Unit = {
+                if (sharedViewModel.mLocationPerm.value == true) {
+                    findNavController().navigate(R.id.action_chooseActionFragment_to_mapsFragment)
+                } else
+                    Toast.makeText(context, R.string.give_location_permission, Toast.LENGTH_LONG)
+                        .show()
+            }
+            tvCheckMyPlot.clicks().subscribe { onCheckPlot() }
 
-        return binding.root
+            val onRecommendPlot: () -> Unit = {
+                findNavController().navigate(R.id.action_chooseActionFragment_to_chooseBuildingFragment)
+            }
+            tvRecommendPlot.clicks().subscribe { onRecommendPlot() }
+
+            return root
+        }
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {

@@ -81,52 +81,54 @@ class ZonesMapFragment : Fragment() {
     ): View {
         _binding = FragmentZonesMapBinding.inflate(inflater, container, false)
 
-        binding.btnNewSearch.clicks().subscribe {
-            findNavController().navigate(R.id.action_global_selectFragment)
-        }
-
-        binding.btnBack.isEnabled = false
-        binding.btnBack.clicks().subscribe {
-            showPreviousMarker()
-        }
-        binding.btnForward.isEnabled = false
-        binding.btnForward.clicks().subscribe {
-            showNextMarker()
-        }
-
         sharedViewModel = (activity as MainActivity).getViewModel()
 
-        binding.btnExportResults.clicks().subscribe {
-            val list = sharedViewModel.mSelectedBuildingsList.value
-                ?.map { building ->  mapBuilding(building) }
-                ?.toTypedArray()
-            sharedViewModel.setSelectedZone(zonesList[markerShown].first.title to list)
-            val area = zonesList[markerShown].second
-            if (area is PolygonOptions) {
-                area.fillColor(0x7F00FF00)
-                googleMap.addPolygon(area)
-            } else if (area is CircleOptions) {
-                area.fillColor(0x7F00FF00)
-                googleMap.addCircle(area)
+        binding.apply {
+            btnNewSearch.clicks().subscribe {
+                findNavController().navigate(R.id.action_global_selectFragment)
             }
-            googleMap.snapshot { bitmap ->
-                if (bitmap != null) {
-                    sharedViewModel.setBitmap(bitmap)
-                    val args = Bundle()
-                    args.putInt("fragment_id", HTMLPrintFragment.ZONE_FOR_PURPOSE)
-                    findNavController().navigate(
-                        R.id.action_global_HTMLPrintFragment,
-                        args
-                    )
+
+            btnBack.isEnabled = false
+            btnBack.clicks().subscribe {
+                showPreviousMarker()
+            }
+            btnForward.isEnabled = false
+            btnForward.clicks().subscribe {
+                showNextMarker()
+            }
+
+            btnExportResults.clicks().subscribe {
+                val list = sharedViewModel.mSelectedBuildingsList.value
+                    ?.map { building ->  mapBuilding(building) }
+                    ?.toTypedArray()
+                sharedViewModel.setSelectedZone(zonesList[markerShown].first.title to list)
+                val area = zonesList[markerShown].second
+                if (area is PolygonOptions) {
+                    area.fillColor(0x7F00FF00)
+                    googleMap.addPolygon(area)
+                } else if (area is CircleOptions) {
+                    area.fillColor(0x7F00FF00)
+                    googleMap.addCircle(area)
+                }
+                googleMap.snapshot { bitmap ->
+                    if (bitmap != null) {
+                        sharedViewModel.setBitmap(bitmap)
+                        val args = Bundle()
+                        args.putInt("fragment_id", HTMLPrintFragment.ZONE_FOR_PURPOSE)
+                        findNavController().navigate(
+                            R.id.action_global_HTMLPrintFragment,
+                            args
+                        )
+                    }
                 }
             }
+
+            activity?.let { MobileAds.initialize(it) }
+            val adRequest = AdRequest.Builder().build()
+            avZonesMapFragmentBanner.loadAd(adRequest)
+
+            return root
         }
-
-        this.context?.let { MobileAds.initialize(it) }
-        val adRequest = AdRequest.Builder().build()
-        binding.avZonesMapFragmentBanner.loadAd(adRequest)
-
-        return binding.root
     }
 
     private fun mapBuilding(building: Building): String {

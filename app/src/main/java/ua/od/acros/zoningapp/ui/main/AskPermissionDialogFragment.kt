@@ -13,7 +13,7 @@ class AskPermissionDialogFragment : DialogFragment() {
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         return activity?.let {
             val builder = AlertDialog.Builder(it)
-            val inflater = requireActivity().layoutInflater
+            val inflater = it.layoutInflater
             val dialogView = inflater.inflate(R.layout.fragment_ask_permission_dialog, null)
             val cb = dialogView.findViewById<CheckBox>(R.id.cb_doNotAsk)
             val prefs = PreferenceManager.getDefaultSharedPreferences(it)

@@ -11,10 +11,10 @@ import ua.od.acros.zoningapp.vm.MainViewModel
 
 class EnterAddressDialogFragment : DialogFragment() {
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
-        val sharedViewModel: MainViewModel by activityViewModels()
         return activity?.let {
+            val sharedViewModel = (it as MainActivity).getViewModel()
             val builder = AlertDialog.Builder(it)
-            val inflater = requireActivity().layoutInflater
+            val inflater = it.layoutInflater
             val dialogView = inflater.inflate(R.layout.fragment_enter_address_dialog, null)
             val et = dialogView.findViewById<EditText>(R.id.et_enterAddress)
             builder.apply {

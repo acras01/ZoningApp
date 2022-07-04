@@ -43,59 +43,63 @@ class ChooseBuildingFragment : Fragment(), AdapterView.OnItemSelectedListener {
         _binding = DataBindingUtil.inflate(inflater, R.layout.fragment_choose_building,
             container, false)
 
-        binding.btnFindZone.isEnabled = false
-        binding.spBuildingType.isEnabled = false
-
-        this.context?.let { MobileAds.initialize(it) }
-        val adRequest = AdRequest.Builder().build()
-        binding.avSelectBuildingFragmentBanner.loadAd(adRequest)
-
         sharedViewModel = (activity as MainActivity).getViewModel()
 
-        binding.viewModel = sharedViewModel
+        binding.apply {
+            btnFindZone.isEnabled = false
+            spBuildingType.isEnabled = false
 
-        val groupList = context?.resources?.getStringArray(R.array.building_groups)?.toMutableList()
-        if (groupList != null) {
-            val spinnerAdapter: CustomAdapter<String>? = context?.let { context ->
-                CustomAdapter(
-                    context,
-                    R.layout.spinner_item,
-                    groupList
-                )
+            activity?.let { MobileAds.initialize(it) }
+            val adRequest = AdRequest.Builder().build()
+            avSelectBuildingFragmentBanner.loadAd(adRequest)
+
+
+            viewModel = sharedViewModel
+
+            val groupList =
+                context?.resources?.getStringArray(R.array.building_groups)?.toMutableList()
+            if (groupList != null) {
+                val spinnerAdapter: CustomAdapter<String>? = context?.let { context ->
+                    CustomAdapter(
+                        context,
+                        R.layout.spinner_item,
+                        groupList
+                    )
+                }
+                spinnerAdapter?.setDropDownViewResource(R.layout.spinner_dropdown_item)
+                spBuildingGroup.adapter = spinnerAdapter
+                spBuildingGroup.onItemSelectedListener = this@ChooseBuildingFragment
+                spBuildingGroup.isEnabled = false
+                sharedViewModel.setGroupList()
             }
-            spinnerAdapter?.setDropDownViewResource(R.layout.spinner_dropdown_item)
-            binding.spBuildingGroup.adapter = spinnerAdapter
-            binding.spBuildingGroup.onItemSelectedListener = this
-            binding.spBuildingGroup.isEnabled = false
-            sharedViewModel.setGroupList()
-        }
 
-        val typeList =
-            context?.resources?.getStringArray(R.array.building_types)?.toMutableList()
-        if (typeList != null) {
-            val spinnerAdapter: CustomAdapter<String>? = context?.let { context ->
-                CustomAdapter<String>(
-                    context,
-                    R.layout.spinner_item,
-                    typeList
-                )
+            val typeList =
+                context?.resources?.getStringArray(R.array.building_types)?.toMutableList()
+            if (typeList != null) {
+                val spinnerAdapter: CustomAdapter<String>? = context?.let { context ->
+                    CustomAdapter<String>(
+                        context,
+                        R.layout.spinner_item,
+                        typeList
+                    )
+                }
+                spinnerAdapter?.setDropDownViewResource(R.layout.spinner_dropdown_item)
+                spBuildingType.adapter = spinnerAdapter
+                spBuildingType.onItemSelectedListener = this@ChooseBuildingFragment
+                spBuildingType.isEnabled = false
             }
-            spinnerAdapter?.setDropDownViewResource(R.layout.spinner_dropdown_item)
-            binding.spBuildingType.adapter = spinnerAdapter
-            binding.spBuildingType.onItemSelectedListener = this
-            binding.spBuildingType.isEnabled = false
-        }
 
-        sharedViewModel.mGroupListReady.observe(viewLifecycleOwner) {
-            binding.spBuildingGroup.isEnabled = it
-        }
+            sharedViewModel.mGroupListReady.observe(viewLifecycleOwner) {
+                spBuildingGroup.isEnabled = it
+            }
 
-        binding.btnFindZone.clicks().subscribe {
-            sharedViewModel.setSelectedBuildingsList(groupSelected, typeSelected)
-            findNavController().navigate(R.id.action_chooseBuildingFragment_to_zonesMapsFragment)
-        }
+            btnFindZone.clicks().subscribe {
+                sharedViewModel.setSelectedBuildingsList(groupSelected, typeSelected)
+                findNavController().navigate(R.id.action_chooseBuildingFragment_to_zonesMapsFragment)
+            }
 
-        return binding.root
+            return root
+        }
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -113,26 +117,28 @@ class ChooseBuildingFragment : Fragment(), AdapterView.OnItemSelectedListener {
             if (p2 == 0) {
                 textView.setTextColor(R.color.button_text_color_disabled)
             }
-            when (p0) {
-                binding.spBuildingGroup -> {
-                    groupSelectionMade = p2 > 0
-                    binding.spBuildingType.isEnabled = groupSelectionMade
-                    binding.spBuildingType.setSelection(0)
-                    if (groupSelectionMade) {
-                        groupSelected = textView.text.toString()
-                        sharedViewModel.setTypeList(groupSelected)
+            binding.apply {
+                when (p0) {
+                    spBuildingGroup -> {
+                        groupSelectionMade = p2 > 0
+                        spBuildingType.isEnabled = groupSelectionMade
+                        spBuildingType.setSelection(0)
+                        if (groupSelectionMade) {
+                            groupSelected = textView.text.toString()
+                            sharedViewModel.setTypeList(groupSelected)
+                        }
+                    }
+                    spBuildingType -> {
+                        typeSelectionMade = p2 > 0
+                        if (typeSelectionMade)
+                            typeSelected = textView.text.toString()
                     }
                 }
-                binding.spBuildingType -> {
-                    typeSelectionMade = p2 > 0
-                    if (typeSelectionMade)
-                        typeSelected = textView.text.toString()
-                }
+                if (sharedViewModel.mLocationPerm.value == true) {
+                    btnFindZone.isEnabled = typeSelectionMade && groupSelectionMade
+                } else
+                    Toast.makeText(context, R.string.give_location_permission, Toast.LENGTH_LONG).show()
             }
-            if (sharedViewModel.mLocationPerm.value == true) {
-                binding.btnFindZone.isEnabled = typeSelectionMade && groupSelectionMade
-            } else
-                Toast.makeText(context, R.string.give_location_permission, Toast.LENGTH_LONG).show()
         }
     }
 

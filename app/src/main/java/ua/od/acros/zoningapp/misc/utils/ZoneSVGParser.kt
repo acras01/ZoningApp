@@ -6,6 +6,8 @@ import com.google.android.gms.maps.model.LatLng
 import com.google.maps.android.geometry.Point
 import org.xmlpull.v1.XmlPullParser
 import java.io.InputStream
+import kotlin.math.cos
+import kotlin.math.sin
 
 class ZoneSVGParser {
 
@@ -20,6 +22,7 @@ class ZoneSVGParser {
     private var scaleY: Double = 1.0
     private var width: Double = 1.0
     private var height: Double = 1.0
+    private var angle: Double = 0.0
 
     fun parse(inputStream: InputStream): List<Zone> {
         val parser: XmlPullParser = Xml.newPullParser()
@@ -39,6 +42,7 @@ class ZoneSVGParser {
         height = parser.getAttributeValue(null, "height_px").toDouble()
         offsetX = parser.getAttributeValue(null, "offsetX").toDouble()
         offsetY = parser.getAttributeValue(null, "offsetY").toDouble()
+        angle = Math.toRadians(parser.getAttributeValue(null, "angle").toDouble())
 
         while (parser.next() != XmlPullParser.END_TAG) {
             if (parser.eventType != XmlPullParser.START_TAG) {
@@ -103,8 +107,8 @@ class ZoneSVGParser {
             if (coordinates.size == 2) {
                 val x = coordinates[0].toDouble()
                 val y = coordinates[1].toDouble()
-                val xy = convertToCenter(x, y)
-                points.add(mercator.revMerc(Point(xy.first, xy.second)))
+                val xy = convertToCenter(Point(x, y), angle)
+                points.add(mercator.revMerc(xy))
             }
         }
         parser.next()
@@ -118,13 +122,13 @@ class ZoneSVGParser {
         val stroke = hex2aRGB(parser.getAttributeValue(null, "stroke"))
         val cx = parser.getAttributeValue(null, "cx").toDouble()
         val cy = parser.getAttributeValue(null, "cy").toDouble()
-        val xy = convertToCenter(cx, cy)
-        val center = mercator.revMerc(Point(xy.first, xy.second))
+        val xy = convertToCenter(Point(cx, cy), angle)
+        val center = mercator.revMerc(xy)
         val radius = parser.getAttributeValue(null, "r").toDouble() * 2 / (scaleX + scaleY)
         parser.next()
         parser.require(XmlPullParser.END_TAG, ns, "circle")
 
-        //val yx = mercator.merc(LatLng(46.452131, 30.673344))
+        //val yx = mercator.merc(LatLng(46.546651, 30.753799))
 
         return Zone.Circle(center, radius, fill, stroke)
     }
@@ -143,13 +147,22 @@ class ZoneSVGParser {
         )
     }
 
-    private fun convertToCenter(x: Double, y: Double): Pair<Double, Double> {
-        var _x = x
-        var _y = y
+    private fun convertToCenter(xy: Point, angle: Double): Point {
+        var _xy = xy
+        if (angle != 0.0)
+            _xy = rotateAxisByAngle(xy, angle)
+        var _x = _xy.x
+        var _y = _xy.y
         _x -= width / 2
         _x = offsetX + _x / scaleX
         _y = height / 2 - _y
         _y = offsetY + _y / scaleY
-        return _x to _y
+        return Point(_x, _y)
+    }
+
+    private fun rotateAxisByAngle(xy: Point, angle: Double): Point {
+        val _x = xy.x * cos(angle) + xy.y * sin(angle)
+        val _y = xy.y * cos(angle) - xy.x * sin(angle)
+        return Point(_x, _y)
     }
 }

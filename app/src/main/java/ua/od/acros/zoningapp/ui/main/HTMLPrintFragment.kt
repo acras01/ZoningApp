@@ -53,12 +53,14 @@ class HTMLPrintFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         _binding = FragmentHtmlPrintBinding.inflate(inflater, container, false)
-        binding.fabSaveResults.isEnabled = false
-        binding.fabSaveResults.clicks().subscribe {
-            createWebPrintJob(binding.webview)
+        binding.apply {
+            fabSaveResults.isEnabled = false
+            fabSaveResults.clicks().subscribe {
+                createWebPrintJob(binding.webview)
+            }
+            printWebView(fragmentId)
+            return root
         }
-        printWebView(fragmentId)
-        return binding.root
     }
 
     private fun printWebView(fragmentId: Int) {

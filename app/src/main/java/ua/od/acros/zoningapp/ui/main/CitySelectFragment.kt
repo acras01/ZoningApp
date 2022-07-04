@@ -35,38 +35,42 @@ class CitySelectFragment : Fragment(), AdapterView.OnItemSelectedListener {
         _binding = DataBindingUtil.inflate(inflater, R.layout.fragment_city_select,
             container, false)
 
-        this.context?.let { MobileAds.initialize(it) }
-        val adRequest = AdRequest.Builder().build()
-        binding.avSelectFragmentBanner.loadAd(adRequest)
-
         val sharedViewModel = (activity as MainActivity).getViewModel()
 
-        binding.viewModel = sharedViewModel
+        binding.apply {
+            activity?.let { MobileAds.initialize(it) }
+            val adRequest = AdRequest.Builder().build()
+            avSelectFragmentBanner.loadAd(adRequest)
 
-        context?.let {
-            sharedViewModel.setCityNameList(it.resources.getStringArray(R.array.city_names).toList())
-            val spinnerAdapter: CustomAdapter<String> = CustomAdapter(
-                it,
-                R.layout.spinner_item,
-                mutableListOf()
-            )
+            viewModel = sharedViewModel
 
-            spinnerAdapter.setDropDownViewResource(R.layout.spinner_dropdown_item)
-            binding.spCities?.adapter = spinnerAdapter
-            binding.spCities?.onItemSelectedListener = this
+            context?.let {
+                sharedViewModel.setCityNameList(
+                    it.resources.getStringArray(R.array.city_names).toList()
+                )
+                val spinnerAdapter: CustomAdapter<String> = CustomAdapter(
+                    it,
+                    R.layout.spinner_item,
+                    mutableListOf()
+                )
+
+                spinnerAdapter.setDropDownViewResource(R.layout.spinner_dropdown_item)
+                spCities?.adapter = spinnerAdapter
+                spCities?.onItemSelectedListener = this@CitySelectFragment
+            }
+
+            btnSelect?.isEnabled = false
+            btnSelect?.clicks()?.subscribe {
+                val id = (spCities?.selectedItemId?.minus(1))?.toInt()
+                val city = sharedViewModel.getCityList()[id!!]
+                sharedViewModel.setCity(city)
+                sharedViewModel.parseBuildings(city)
+                sharedViewModel.prepareMapForCity(city)
+                findNavController().navigate(R.id.action_selectFragment_to_chooseActionFragment)
+            }
+
+            return root
         }
-
-        binding.btnSelect?.isEnabled = false
-        binding.btnSelect?.clicks()?.subscribe {
-            val id = (binding.spCities?.selectedItemId?.minus(1))?.toInt()
-            val city = sharedViewModel.getCityList()[id!!]
-            sharedViewModel.setCity(city)
-            sharedViewModel.parseBuildings(city)
-            sharedViewModel.prepareMapForCity(city)
-            findNavController().navigate(R.id.action_selectFragment_to_chooseActionFragment)
-        }
-
-        return binding.root
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -82,7 +86,7 @@ class CitySelectFragment : Fragment(), AdapterView.OnItemSelectedListener {
     override fun onItemSelected(p0: AdapterView<*>?, p1: View?, p2: Int, p3: Long) {
         if (p1 != null) {
             val textView = p1 as TextView
-            if (p2 == 0) {
+            if (p2 != 1) {
                 binding.btnSelect?.isEnabled = false
                 textView.setTextColor(R.color.button_text_color_disabled)
             } else {

@@ -29,26 +29,28 @@ class ZoneExportFragment : Fragment() {
 
         val sharedViewModel = (activity as MainActivity).getViewModel()
 
-        binding.viewModel = sharedViewModel
+        binding.apply {
+            viewModel = sharedViewModel
 
-        this.context?.let { MobileAds.initialize(it) }
-        val adRequest = AdRequest.Builder().build()
-        binding.avZoneExportFragmentBanner.loadAd(adRequest)
+            activity?.let { MobileAds.initialize(it) }
+            val adRequest = AdRequest.Builder().build()
+            avZoneExportFragmentBanner.loadAd(adRequest)
 
-        binding.btnNewSearch.clicks().subscribe {
-            findNavController().navigate(R.id.action_global_selectFragment)
+            btnNewSearch.clicks().subscribe {
+                findNavController().navigate(R.id.action_global_selectFragment)
+            }
+
+            btnExportResults.clicks().subscribe {
+                val args = Bundle()
+                args.putInt("fragment_id", HTMLPrintFragment.ZONE_ON_MAP)
+                findNavController().navigate(
+                    R.id.action_global_HTMLPrintFragment,
+                    args
+                )
+            }
+
+            return root
         }
-
-        binding.btnExportResults.clicks().subscribe {
-            val args = Bundle()
-            args.putInt("fragment_id", HTMLPrintFragment.ZONE_ON_MAP)
-            findNavController().navigate(
-                R.id.action_global_HTMLPrintFragment,
-                args
-            )
-        }
-
-        return binding.root
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
