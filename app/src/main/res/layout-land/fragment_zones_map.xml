@@ -1,148 +1,121 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.appcompat.widget.LinearLayoutCompat xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/background"
-    android:orientation="horizontal"
-    android:weightSum="1"
     tools:context=".ui.main.ZonesMapFragment">
 
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/cl1"
+    <TextView
+        android:id="@+id/tv_suitableZones"
         android:layout_width="wrap_content"
-        android:layout_height="match_parent"
-        android:layout_weight=".7"
-        android:orientation="vertical">
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="8dp"
+        android:gravity="center"
+        android:text="@string/suitable_zones"
+        android:textColor="@color/black"
+        android:textSize="24sp"
+        app:layout_constraintEnd_toEndOf="@+id/frameLayout"
+        app:layout_constraintStart_toStartOf="@+id/frameLayout"
+        app:layout_constraintTop_toTopOf="parent" />
 
-        <TextView
-            android:id="@+id/tv_suitableZones"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
-            android:layout_marginStart="8dp"
-            android:layout_marginTop="8dp"
-            android:layout_marginEnd="8dp"
-            android:gravity="center"
-            android:text="@string/suitable_zones"
-            android:textColor="@color/black"
-            android:textSize="24sp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+    <FrameLayout
+        android:id="@+id/frameLayout"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginBottom="8dp"
+        android:background="@color/background"
+        app:layout_constraintBottom_toTopOf="@id/btn_Back"
+        app:layout_constraintEnd_toStartOf="@+id/btn_exportResults"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tv_suitableZones">
 
         <androidx.fragment.app.FragmentContainerView
             android:id="@+id/map"
             android:name="com.google.android.gms.maps.SupportMapFragment"
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            android:layout_marginStart="8dp"
-            android:layout_marginTop="8dp"
-            android:layout_marginEnd="8dp"
-            android:layout_marginBottom="8dp"
-            app:layout_constraintBottom_toTopOf="@+id/ll1"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/tv_suitableZones" />
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+    </FrameLayout>
 
-        <androidx.appcompat.widget.LinearLayoutCompat
-            android:id="@+id/ll1"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
-            android:layout_marginStart="8dp"
-            android:layout_marginEnd="8dp"
-            android:layout_marginBottom="8dp"
-            android:orientation="horizontal"
-            android:weightSum="1"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent">
-
-            <ImageButton
-                android:id="@+id/btn_Back"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_vertical"
-                android:layout_marginStart="32dp"
-                android:layout_marginTop="8dp"
-                android:layout_marginEnd="32dp"
-                android:layout_weight=".5"
-                android:backgroundTint="@color/button_state_colors"
-                android:contentDescription="@string/back"
-                android:minHeight="48dp"
-                android:src="@drawable/ic_baseline_arrow_back_ios_24" />
-
-            <ImageButton
-                android:id="@+id/btn_Forward"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_vertical"
-                android:layout_marginStart="32dp"
-                android:layout_marginTop="8dp"
-                android:layout_marginEnd="32dp"
-                android:layout_weight=".5"
-                android:backgroundTint="@color/button_state_colors"
-                android:contentDescription="@string/forward"
-                android:minHeight="48dp"
-                android:src="@drawable/ic_baseline_arrow_forward_ios_24" />
-        </androidx.appcompat.widget.LinearLayoutCompat>
-    </androidx.constraintlayout.widget.ConstraintLayout>
-
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/cl2"
+    <ImageButton
+        android:id="@+id/btn_Back"
         android:layout_width="wrap_content"
-        android:layout_height="match_parent"
-        android:layout_marginStart="8dp"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical"
+        android:layout_marginStart="32dp"
+        android:layout_marginBottom="8dp"
+        android:backgroundTint="@color/button_state_colors"
+        android:contentDescription="@string/back"
+        android:minHeight="48dp"
+        android:src="@drawable/ic_baseline_arrow_back_ios_24"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="@+id/frameLayout" />
+
+    <ImageButton
+        android:id="@+id/btn_Forward"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical"
+        android:layout_marginEnd="32dp"
+        android:layout_marginBottom="8dp"
+        android:backgroundTint="@color/button_state_colors"
+        android:contentDescription="@string/forward"
+        android:minHeight="48dp"
+        android:src="@drawable/ic_baseline_arrow_forward_ios_24"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="@+id/frameLayout"
+        app:layout_constraintTop_toTopOf="@+id/btn_Back" />
+
+    <Button
+        android:id="@+id/btn_exportResults"
+        android:layout_width="0dp"
+        android:layout_height="64dp"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="32dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginBottom="97dp"
+        android:backgroundTint="@color/button_state_colors"
+        android:text="@string/export_zones"
+        android:textColor="@color/button_text_state_colors"
+        app:layout_constraintBottom_toTopOf="@+id/btn_newSearch"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <Button
+        android:id="@+id/btn_newSearch"
+        android:layout_width="0dp"
+        android:layout_height="64dp"
+        android:layout_gravity="center_horizontal"
         android:layout_marginTop="8dp"
         android:layout_marginEnd="8dp"
-        android:layout_weight=".3"
-        android:orientation="vertical">
+        android:layout_marginBottom="8dp"
+        android:backgroundTint="@color/button_state_colors"
+        android:text="@string/new_search"
+        android:textColor="@color/button_text_state_colors"
+        app:layout_constraintBottom_toTopOf="@+id/av_zonesMapFragmentBanner"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="@+id/btn_exportResults"
+        app:layout_constraintTop_toBottomOf="@+id/btn_exportResults" />
 
-        <Button
-            android:id="@+id/btn_exportResults"
-            android:layout_width="0dp"
-            android:layout_height="64dp"
-            android:layout_gravity="center_horizontal"
-            android:layout_marginTop="24dp"
-            android:layout_marginStart="8dp"
-            android:layout_marginEnd="8dp"
-            android:backgroundTint="@color/button_state_colors"
-            android:text="@string/export_zones"
-            android:textColor="@color/button_text_state_colors"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+    <com.google.android.gms.ads.AdView
+        android:id="@+id/av_zonesMapFragmentBanner"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="false"
+        android:layout_gravity="bottom|center_horizontal"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginBottom="8dp"
+        app:adSize="BANNER"
+        app:adUnitId="ca-app-pub-5575310058998232/5854634701"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/frameLayout" />
 
-        <Button
-            android:id="@+id/btn_newSearch"
-            android:layout_width="0dp"
-            android:layout_height="64dp"
-            android:layout_gravity="center_horizontal"
-            android:layout_marginStart="8dp"
-            android:layout_marginEnd="8dp"
-            android:backgroundTint="@color/button_state_colors"
-            android:text="@string/new_search"
-            android:textColor="@color/button_text_state_colors"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/btn_exportResults" />
-
-        <com.google.android.gms.ads.AdView
-            android:id="@+id/av_zonesMapFragmentBanner"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_centerInParent="false"
-            android:layout_gravity="bottom|center_horizontal"
-            android:layout_marginStart="8dp"
-            android:layout_marginEnd="8dp"
-            android:layout_marginBottom="8dp"
-            app:adSize="BANNER"
-            app:adUnitId="ca-app-pub-5575310058998232/5854634701"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent" />
-    </androidx.constraintlayout.widget.ConstraintLayout>
-
-</androidx.appcompat.widget.LinearLayoutCompat>
+</androidx.constraintlayout.widget.ConstraintLayout>
