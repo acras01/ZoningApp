@@ -61,4 +61,9 @@ class ZoneExportFragment : Fragment() {
             }
         })
     }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
+    }
 }

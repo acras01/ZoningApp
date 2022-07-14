@@ -63,6 +63,11 @@ class HTMLPrintFragment : Fragment() {
         }
     }
 
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
+    }
+
     private fun printWebView(fragmentId: Int) {
         binding.webview.webViewClient = object : WebViewClient() {
             override fun shouldOverrideUrlLoading(

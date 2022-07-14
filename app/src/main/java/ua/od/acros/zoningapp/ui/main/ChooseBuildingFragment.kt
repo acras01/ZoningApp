@@ -147,4 +147,9 @@ class ChooseBuildingFragment : Fragment(), AdapterView.OnItemSelectedListener {
         groupSelectionMade = false
         binding.btnFindZone.isEnabled = false
     }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
+    }
 }

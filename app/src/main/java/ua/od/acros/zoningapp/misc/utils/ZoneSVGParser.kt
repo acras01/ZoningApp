@@ -14,8 +14,6 @@ class ZoneSVGParser {
     // We don't use namespaces
     private val ns: String? = null
 
-    private val mercator = EllipticalMercator()
-
     private var offsetX: Double = 0.0
     private var offsetY: Double = 0.0
     private var scaleX: Double = 1.0
@@ -108,7 +106,7 @@ class ZoneSVGParser {
                 val x = coordinates[0].toDouble()
                 val y = coordinates[1].toDouble()
                 val xy = convertToCenter(Point(x, y), angle)
-                points.add(mercator.revMerc(xy))
+                points.add(EllipticalMercator.revMerc(xy))
             }
         }
         parser.next()
@@ -123,12 +121,12 @@ class ZoneSVGParser {
         val cx = parser.getAttributeValue(null, "cx").toDouble()
         val cy = parser.getAttributeValue(null, "cy").toDouble()
         val xy = convertToCenter(Point(cx, cy), angle)
-        val center = mercator.revMerc(xy)
+        val center = EllipticalMercator.revMerc(xy)
         val radius = parser.getAttributeValue(null, "r").toDouble() * 2 / (scaleX + scaleY)
         parser.next()
         parser.require(XmlPullParser.END_TAG, ns, "circle")
 
-        //val yx = mercator.merc(LatLng(46.546651, 30.753799))
+        //val yx = EllipticalMercator.merc(LatLng(46.546651, 30.753799))
 
         return Zone.Circle(center, radius, fill, stroke)
     }

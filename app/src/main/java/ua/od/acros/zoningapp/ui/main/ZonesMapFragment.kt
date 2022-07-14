@@ -259,6 +259,11 @@ class ZonesMapFragment : Fragment() {
         })
     }
 
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
+    }
+
     private fun moveCameraToBounds(bounds: LatLngBounds) {
         val metrics = this.activity?.let { screenValue(it) }
         val cu = CameraUpdateFactory.newLatLngBounds(
