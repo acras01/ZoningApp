@@ -9,32 +9,30 @@ import androidx.fragment.app.DialogFragment
 import androidx.preference.PreferenceManager
 import ua.od.acros.zoningapp.R
 
-class AskPermissionDialogFragment : DialogFragment() {
+class AskPermissionDialogFragment(private val askPermission: () -> Unit): DialogFragment() {
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
-        return activity?.let {
-            val builder = AlertDialog.Builder(it)
-            val inflater = it.layoutInflater
+        return activity?.let { activity ->
+            val builder = AlertDialog.Builder(activity)
+            val inflater = activity.layoutInflater
             val dialogView = inflater.inflate(R.layout.fragment_ask_permission_dialog, null)
             val cb = dialogView.findViewById<CheckBox>(R.id.cb_doNotAsk)
-            val prefs = PreferenceManager.getDefaultSharedPreferences(it)
+            val prefs = PreferenceManager.getDefaultSharedPreferences(activity)
             val editor = prefs.edit()
             builder.apply {
                 setView(dialogView)
                 setPositiveButton(android.R.string.ok
                 ) { _, _ ->
                     editor.putBoolean("show_dialog", cb.isChecked)
-                    (it as MainActivity).apply {
-                        askForLocationPermission()
-                    }
+                    askPermission()
                 }
                 setNegativeButton(android.R.string.cancel
                 ) { _, _ ->
                     val check = cb.isChecked
                     editor.putBoolean("show_dialog", check)
                     if (check)
-                        Toast.makeText(it, R.string.not_functional_check, Toast.LENGTH_LONG).show()
+                        Toast.makeText(activity, R.string.not_functional_check, Toast.LENGTH_LONG).show()
                     else
-                        Toast.makeText(it, R.string.not_functional, Toast.LENGTH_LONG).show()
+                        Toast.makeText(activity, R.string.not_functional, Toast.LENGTH_LONG).show()
                 }
             }
             editor.apply()

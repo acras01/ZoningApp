@@ -23,8 +23,8 @@ class MainActivity : AppCompatActivity() {
         registerForActivityResult(
             ActivityResultContracts.RequestMultiplePermissions()) { result ->
             var allAreGranted = true
-            for (b in result.values) {
-                allAreGranted = allAreGranted && b
+            for (permissionGranted in result.values) {
+                allAreGranted = allAreGranted && permissionGranted
             }
             sharedViewModel.setLocationPermission(allAreGranted)
         }
@@ -48,12 +48,14 @@ class MainActivity : AppCompatActivity() {
                 Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
             sharedViewModel.setLocationPermission(true)
         } else if (!check) {
-            val dialog = AskPermissionDialogFragment()
+            val dialog = AskPermissionDialogFragment {
+                askForLocationPermission()
+            }
             dialog.show(supportFragmentManager, "AskPermissionDialogFragment")
         }
     }
 
-    fun askForLocationPermission() {
+    private fun askForLocationPermission() {
         val appPerms = arrayOf(
             Manifest.permission.ACCESS_FINE_LOCATION,
             Manifest.permission.ACCESS_COARSE_LOCATION
