@@ -48,14 +48,12 @@ class MainActivity : AppCompatActivity() {
                 Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
             sharedViewModel.setLocationPermission(true)
         } else if (!check) {
-            val dialog = AskPermissionDialogFragment {
-                askForLocationPermission()
-            }
+            val dialog = AskPermissionDialogFragment()
             dialog.show(supportFragmentManager, "AskPermissionDialogFragment")
         }
     }
 
-    private fun askForLocationPermission() {
+    fun askForLocationPermission() {
         val appPerms = arrayOf(
             Manifest.permission.ACCESS_FINE_LOCATION,
             Manifest.permission.ACCESS_COARSE_LOCATION

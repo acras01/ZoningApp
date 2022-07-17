@@ -9,7 +9,7 @@ import androidx.fragment.app.DialogFragment
 import androidx.preference.PreferenceManager
 import ua.od.acros.zoningapp.R
 
-class AskPermissionDialogFragment(private val askPermission: () -> Unit): DialogFragment() {
+class AskPermissionDialogFragment: DialogFragment() {
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         return activity?.let { activity ->
             val builder = AlertDialog.Builder(activity)
@@ -23,7 +23,7 @@ class AskPermissionDialogFragment(private val askPermission: () -> Unit): Dialog
                 setPositiveButton(android.R.string.ok
                 ) { _, _ ->
                     editor.putBoolean("show_dialog", cb.isChecked)
-                    askPermission()
+                    (activity as MainActivity).askForLocationPermission()
                 }
                 setNegativeButton(android.R.string.cancel
                 ) { _, _ ->
