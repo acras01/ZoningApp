@@ -1,9 +1,6 @@
 package ua.od.acros.zoningapp.vm
 
 import android.graphics.Bitmap
-import androidx.databinding.ObservableArrayList
-import androidx.databinding.ObservableField
-import androidx.databinding.ObservableList
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -29,9 +26,10 @@ class MainViewModel @Inject constructor(
     private val getLocationFromAddressUseCase: GetLocationFromAddressUseCase
 ) : ViewModel() {
 
-    private var selectedZone: ObservableField<Pair<String?, Array<String>?>> = ObservableField()
+    private val selectedZone: MutableLiveData<Pair<String?, Array<String>?>> = MutableLiveData()
+    val mSelectedZone: LiveData<Pair<String?, Array<String>?>> get() = selectedZone
     fun setSelectedZone(pair: Pair<String?, Array<String>?>) {
-        selectedZone.set(pair)
+        selectedZone.value = pair
     }
     fun getSelectedZone() = selectedZone
 
@@ -41,19 +39,12 @@ class MainViewModel @Inject constructor(
         selectedBuildingsList.value = getListForGroupAndType(groupSelected, typeSelected)
     }
 
-    private var cityNameList: ObservableArrayList<String>  = ObservableArrayList()
-    fun setCityNameList(list: List<String>) {
-        if (cityNameList.isNotEmpty())
-            cityNameList.clear()
-        cityNameList.addAll(list)
-    }
-    fun getCityNameList() = cityNameList
+    private val cityList: MutableLiveData<List<City>?> = MutableLiveData()
+    val mCityList: LiveData<List<City>?> get() = cityList
 
     private val buildingList: MutableLiveData<List<Building>?> = MutableLiveData()
     val mBuildingList: LiveData<List<Building>?> get() = buildingList
 
-    private var cityList: MutableList<City> = mutableListOf()
-    fun getCityList() = cityList
     private var city: MutableLiveData<City> = MutableLiveData()
     val mCity: LiveData<City> get() = city
     fun setCity(city: City) {
@@ -78,51 +69,6 @@ class MainViewModel @Inject constructor(
         mapBitmap.value = bitmap
     }
 
-    private val groupListReady: MutableLiveData<Boolean> = MutableLiveData(false)
-    val mGroupListReady: LiveData<Boolean> get() = groupListReady
-    private var groupList: ObservableArrayList<String> = ObservableArrayList()
-    fun setGroupList() {
-        val list = if (buildingList.value != null)
-            buildingList.value!!
-                .asSequence()
-                .map { building -> building.group }
-                .filterNot { it == "" }
-                .toSet()
-                .sorted()
-                .toList()
-        else
-            emptyList()
-        if (groupList.isNotEmpty())
-            groupList.clear()
-        groupList.addAll(list)
-        groupListReady.value = true
-    }
-    fun getGroupList(): ObservableArrayList<String> {
-        return groupList
-    }
-
-    private var typeList: ObservableArrayList<String> = ObservableArrayList()
-    fun setTypeList(group: String) {
-        val list = if (buildingList.value != null) {
-            buildingList.value!!
-                .asSequence()
-                .filter { building -> building.group == group }
-                .map { building -> building.type }
-                .filterNot { it == "" }
-                .toSet()
-                .sorted()
-                .toList()
-        } else
-            emptyList()
-        if (typeList.isNotEmpty()) {
-            typeList.clear()
-        }
-        typeList.addAll(list)
-    }
-    fun getTypeList(): ObservableArrayList<String> {
-        return typeList
-    }
-
     private var jobSVG: Job? = null
     private var jobCities: Job? = null
     private var jobBuildings: Job? = null
@@ -144,7 +90,7 @@ class MainViewModel @Inject constructor(
         jobCities = viewModelScope.launch {
             val cityListType: Type = object : TypeToken<MutableList<City>>() {}.type
             val list = getJsonUseCase.execute<City>("cities.json",cityListType)
-            cityList.addAll(list)
+            cityList.value = list
         }
     }
 
@@ -207,6 +153,33 @@ class MainViewModel @Inject constructor(
             return arrayOf(list1.toSet().sorted().toContinuousString(),
                 list2.toSet().sorted().toContinuousString(),
                 list3.toSet().sorted().toContinuousString())
+        }
+        return null
+    }
+
+    fun getGroupList(): Collection<String>? {
+        if (buildingList.value != null) {
+            return buildingList.value!!
+                .asSequence()
+                .map { building -> building.group }
+                .filterNot { it == "" }
+                .toSet()
+                .sorted()
+                .toList()
+        }
+        return null
+    }
+
+    fun getTypeListForGroup(group: String): Collection<String>? {
+        if (buildingList.value != null) {
+            return buildingList.value!!
+                .asSequence()
+                .filter { building -> building.group == group }
+                .map { building -> building.type }
+                .filterNot { it == "" }
+                .toSet()
+                .sorted()
+                .toList()
         }
         return null
     }

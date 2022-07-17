@@ -105,18 +105,22 @@ class HTMLPrintFragment : Fragment() {
                 THIRD_GROUP +
                 "<h3>{ZONE3_PLACEHOLDER}</h3>\n"
 
-        var zoneDesc = sharedViewModel.getSelectedZone().get()?.first
-        html = html.replace("{ZONE_PLACEHOLDER}", zoneDesc!!)
-        zoneDesc = sharedViewModel.getSelectedZone().get()?.second!![0]
-        html = html.replace("{ZONE1_PLACEHOLDER}", zoneDesc)
-        zoneDesc = sharedViewModel.getSelectedZone().get()?.second!![1]
-        html = html.replace("{ZONE2_PLACEHOLDER}", zoneDesc)
-        zoneDesc = sharedViewModel.getSelectedZone().get()?.second!![2]
-        html = html.replace("{ZONE3_PLACEHOLDER}", zoneDesc)
-        html = html.replace("\n", "<br>")
+        val zone = sharedViewModel.getSelectedZone().value
+        if (zone != null) {
+            var zoneDesc = zone.first
+            html = html.replace("{ZONE_PLACEHOLDER}", zoneDesc!!)
+            zoneDesc = zone.second!![0]
+            html = html.replace("{ZONE1_PLACEHOLDER}", zoneDesc)
+            zoneDesc = zone.second!![1]
+            html = html.replace("{ZONE2_PLACEHOLDER}", zoneDesc)
+            zoneDesc = zone.second!![2]
+            html = html.replace("{ZONE3_PLACEHOLDER}", zoneDesc)
+            html = html.replace("\n", "<br>")
+        }
 
-        val bitmap: Bitmap = sharedViewModel.mMapBitmap.value!!
-        html = html.replace("{IMAGE_PLACEHOLDER}", prepareImage(bitmap))
+        val bitmap = sharedViewModel.mMapBitmap.value
+        if (bitmap != null)
+            html = html.replace("{IMAGE_PLACEHOLDER}", prepareImage(bitmap))
 
         return html
     }
@@ -130,7 +134,7 @@ class HTMLPrintFragment : Fragment() {
                 "<p>&nbsp;</p>\n" +
                 "<h3>{LEGEND_PLACEHOLDER}</h3>"
 
-        var zoneDesc = sharedViewModel.getSelectedZone().get()?.first
+        var zoneDesc = sharedViewModel.getSelectedZone().value?.first
         var type = ""
         var legend = ""
         when (zoneDesc?.last()) {
@@ -149,13 +153,14 @@ class HTMLPrintFragment : Fragment() {
         }
         html = html.replace("{ZONE_PLACEHOLDER}", zoneDesc!!.dropLast(1))
         html = html.replace("{TYPE_PLACEHOLDER}", type)
-        zoneDesc = sharedViewModel.getSelectedZone().get()?.second!![0]
+        zoneDesc = sharedViewModel.getSelectedZone().value?.second!![0]
         html = html.replace("{GROUP_PLACEHOLDER}", zoneDesc)
         html = html.replace("{LEGEND_PLACEHOLDER}", legend)
         html = html.replace("\n", "<br>")
 
-        val bitmap: Bitmap = sharedViewModel.mMapBitmap.value!!
-        html = html.replace("{IMAGE_PLACEHOLDER}", prepareImage(bitmap))
+        val bitmap = sharedViewModel.mMapBitmap.value
+        if (bitmap != null)
+            html = html.replace("{IMAGE_PLACEHOLDER}", prepareImage(bitmap))
 
         return html
     }

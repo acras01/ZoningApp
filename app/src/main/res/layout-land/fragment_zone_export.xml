@@ -112,12 +112,13 @@
         android:layout_height="64dp"
         android:layout_marginStart="16dp"
         android:layout_marginTop="8dp"
-        android:layout_marginEnd="16dp"
+        android:layout_marginEnd="64dp"
+        android:layout_marginBottom="4dp"
         android:backgroundTint="@color/button_state_colors"
         android:text="@string/export_zones"
         android:textColor="@color/button_text_state_colors"
-        app:layout_constraintBottom_toTopOf="@+id/btn_newSearch"
-        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toTopOf="@+id/av_zoneExportFragmentBanner"
+        app:layout_constraintEnd_toEndOf="@+id/av_zoneExportFragmentBanner"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/sv_zoneDesc" />
 
@@ -125,16 +126,16 @@
         android:id="@+id/btn_newSearch"
         android:layout_width="192dp"
         android:layout_height="64dp"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="8dp"
+        android:layout_marginStart="64dp"
         android:layout_marginEnd="16dp"
+        android:layout_marginBottom="4dp"
         android:backgroundTint="@color/button_state_colors"
         android:text="@string/new_search"
         android:textColor="@color/button_text_state_colors"
         app:layout_constraintBottom_toTopOf="@+id/av_zoneExportFragmentBanner"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/btn_exportResults" />
+        app:layout_constraintStart_toStartOf="@+id/av_zoneExportFragmentBanner"
+        app:layout_constraintTop_toTopOf="@+id/btn_exportResults" />
 
     <com.google.android.gms.ads.AdView
         android:id="@+id/av_zoneExportFragmentBanner"
